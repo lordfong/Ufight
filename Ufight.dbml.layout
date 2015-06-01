@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="Ufight">
+  <DataContextMoniker Name="/UfightDataContext" />
+  <nestedChildShapes>
+    <classShape Id="fb3ee790-1366-4477-8946-a626bb7503f3" absoluteBounds="7, 1.125, 2, 1.3862939453125">
+      <DataClassMoniker Name="/UfightDataContext/Bonden" />
+      <nestedChildShapes>
+        <elementListCompartment Id="04416bcb-3ccd-4917-8a59-d2b08b3e63d2" absoluteBounds="7.015, 1.585, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="917c4246-5681-418f-89d8-86eca77d7d2b" absoluteBounds="6.625, 3.5, 2, 1.3862939453125">
+      <DataClassMoniker Name="/UfightDataContext/BondRank" />
+      <nestedChildShapes>
+        <elementListCompartment Id="ab45639e-5111-4d13-80cd-b94d22e97a80" absoluteBounds="6.64, 3.96, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="d20b8442-ac92-4331-a762-396337854988" absoluteBounds="1.375, 1, 2, 1.1939925130208333">
+      <DataClassMoniker Name="/UfightDataContext/Role" />
+      <nestedChildShapes>
+        <elementListCompartment Id="38cdd72e-d9a6-4bdf-b498-36a5265e5e71" absoluteBounds="1.3900000000000001, 1.46, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="a5cda3e0-951a-473d-be38-ffa21e2aa79b" absoluteBounds="1.75, 3.25, 2, 2.9247054036458331">
+      <DataClassMoniker Name="/UfightDataContext/User" />
+      <nestedChildShapes>
+        <elementListCompartment Id="f730e0e0-759e-41ff-a7fe-37c9c0206388" absoluteBounds="1.7650000000000001, 3.71, 1.9700000000000002, 2.364705403645833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="1a1d702b-fa6b-4027-8ac4-74f82f079216" absoluteBounds="4.125, 1.125, 2, 3.3093082682291666">
+      <DataClassMoniker Name="/UfightDataContext/Fighter" />
+      <nestedChildShapes>
+        <elementListCompartment Id="e9e14031-5814-4f8d-b910-25bce860e9aa" absoluteBounds="4.14, 1.585, 1.9700000000000002, 2.7493082682291665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

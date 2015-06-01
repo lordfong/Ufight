@@ -1,0 +1,3354 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Vita</name>
+    </assembly>
+    <members>
+        <member name="M:Vita.Common.Binary.ComputeHash">
+            <summary> 
+            Simple hash using pseudo-random coefficients for each byte in
+            the array to achieve order dependency.
+            </summary>
+        </member>
+        <member name="T:Vita.Common.DictionaryWrapper`2">
+            <summary>A wrapper for dictionary tracking modified state of the dictionary.</summary>
+            <typeparam name="TKey">Key type.</typeparam>
+            <typeparam name="TValue">Value type.</typeparam>
+        </member>
+        <member name="T:Vita.Data.DbOptions">
+            <summary>DB option flags. </summary>
+        </member>
+        <member name="F:Vita.Data.DbOptions.None">
+            <summary>Empty set.</summary>
+        </member>
+        <member name="F:Vita.Data.DbOptions.UseStoredProcs">
+            <summary>Use stored procedures for CRUD access.</summary>
+        </member>
+        <member name="F:Vita.Data.DbOptions.UseRefIntegrity">
+            <summary>Create referential integrity constraints in database. </summary>
+        </member>
+        <member name="F:Vita.Data.DbOptions.PluralizeTableNames">
+            <summary>Pluralize table names, ex: entity IProduct -> table Products. </summary>
+        </member>
+        <member name="F:Vita.Data.DbOptions.IgnoreTableNamesCase">
+            <summary>Ignore table name case.</summary>
+        </member>
+        <member name="F:Vita.Data.DbOptions.AutoIndexForeignKeys">
+            <summary>Instructs system to create indexes on all foreign keys if server does not do it automatically like SQL Server.</summary>
+        </member>
+        <member name="F:Vita.Data.DbOptions.Default">
+            <summary> Default value.</summary>
+        </member>
+        <member name="T:Vita.Data.DbModelUpdateMode">
+            <summary>Defines values for database model (db schema) update mode.</summary>
+        </member>
+        <member name="F:Vita.Data.DbModelUpdateMode.Never">
+            <summary>Never update database model. Suitable for production servers.</summary>
+        </member>
+        <member name="F:Vita.Data.DbModelUpdateMode.NonProductionOnly">
+            <summary>Update database model only on non-production databases.</summary>
+            <remarks>The database instance type is saved in the DbInfo table defined in the DbInfo module.</remarks>
+        </member>
+        <member name="F:Vita.Data.DbModelUpdateMode.Always">
+            <summary>Always update database model.</summary>
+        </member>
+        <member name="T:Vita.Data.DbModelUpdateOptions">
+            <summary>Defines option flags for database model update operations.</summary>
+        </member>
+        <member name="F:Vita.Data.DbModelUpdateOptions.None">
+            <summary>Empty value, no options specified.</summary>
+        </member>
+        <member name="F:Vita.Data.DbModelUpdateOptions.UpdateTables">
+            <summary>Update tables in database update process.</summary>
+        </member>
+        <member name="F:Vita.Data.DbModelUpdateOptions.UpdateIndexes">
+            <summary>Update indexes in database update process.</summary>
+        </member>
+        <member name="F:Vita.Data.DbModelUpdateOptions.UpdateStoredProcs">
+            <summary>Update stored procedures in database update process.</summary>
+        </member>
+        <member name="F:Vita.Data.DbModelUpdateOptions.DropUnknownObjects">
+            <summary>Drop tables and indexes that have no matching objects in entity model.</summary>
+        </member>
+        <member name="F:Vita.Data.DbModelUpdateOptions.Default">
+            <summary>Default value - union of <c>UpdateTables</c>, <c>UpdateIndexes</c> and <c>UpdateStoredProcs</c>.</summary>
+        </member>
+        <member name="T:Vita.Data.Driver.DbModelLoader">
+            <summary>Loads DB model from database. </summary>
+        </member>
+        <member name="M:Vita.Data.Driver.DbModelUpdater.BuildScripts(Vita.Data.Model.Management.DbModelChange)">
+            <summary>
+            Builds SQL statement(s) implementing DB model change action; dispatches the call to one of the virtual methods
+            building scripts for specific action. 
+            </summary>
+            <param name="change">Db model change object.</param>
+            <remarks>Inherited class in DB Vendor-specific driver should override virtual methods for specific actions
+            and provide vendor-specific SQLs. If the method returns null as script, it is considered not supported action, and 
+            no script is added. 
+            </remarks>
+        </member>
+        <member name="M:Vita.Data.Driver.DbModelUpdater.BuildMissingScript(Vita.Data.Model.Management.DbModelChange)">
+            <summary>Provides vendor-specific implementation for DB model change. 
+            Called if no scripts were provided for a change by specific SQL-generating method. </summary>
+            <param name="change">DB model change object.</param>
+        </member>
+        <member name="T:Vita.Data.Driver.SqlFunctionType">
+            <summary>SQL specific custom expression types. </summary>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.PreviewSelect(Vita.Data.Linq.Translation.Expressions.SelectExpression)">
+            <summary>  Previews and changes if necessary the entire (outermost) expression. </summary>
+            <param name="e"></param>
+            <remarks> 
+             <para>  The PreviewSelect method allows provider to manipulate  the expression tree <i>before</i> SQL generation, thus allowing 
+              otherwise invalid expressions to be removed prior to the generation phase.
+             </para>
+             <para> Case in point: for <c>(from p in people orderby p.LastName select p).Count()</c>
+              is translated into e.g. 
+              <c>SELECT COUNT(*) FROM People ORDER BY LastName</c>.  
+              However, this is invalid for Microsoft SQL Server (the <c>ORDER BY</c> cannot be present). 
+             </para>
+            <para>
+            Derived classes can override this method to manipulate the 
+              entire expression prior to SQL generation.The default implementation returns <c>e</c> unchanged.</para>
+            </remarks>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.CheckQueryParameter(Vita.Data.Linq.Translation.Expressions.ExternalValueExpression)">
+            <summary>Checks parameter type and determines if parameter may be used as DB command parameter. 
+            Sets parameter value SqlUse property to DbParameter or Literal. </summary>
+            <param name="parameter">Input parameter expression to check.</param>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteral(System.Object)">
+            <summary>
+            Converts a constant value to a literal representation
+            </summary>
+            <param name="literal"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteral(System.Linq.Expressions.ExpressionType,System.Collections.Generic.IList{Vita.Data.Linq.Translation.SqlGen.SqlStatement})">
+            <summary>
+            Converts a standard operator to an expression
+            </summary>
+            <param name="operationType"></param>
+            <param name="p"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteral(Vita.Data.Driver.SqlFunctionType,System.Collections.Generic.IList{Vita.Data.Linq.Translation.SqlGen.SqlStatement})">
+            <summary>
+            Converts a special expression type to literal
+            </summary>
+            <param name="operationType"></param>
+            <param name="parameters"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralMathSqrt(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal math SQRT.
+            </summary>
+            <param name="p">The p.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralMathSign(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal math sign.
+            </summary>
+            <param name="p">The p.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralMathRound(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal math round.
+            </summary>
+            <param name="p">The p.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralMathPow(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal math pow.
+            </summary>
+            <param name="p">The p.</param>
+            <param name="p_2">The P_2.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralMathLog(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal math log.
+            </summary>
+            <param name="p">The p.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralMathLog(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal math log.
+            </summary>
+            <param name="p">The p.</param>
+            <param name="p_2">The P_2.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralMathLn(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal math ln.
+            </summary>
+            <param name="p">The p.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralMathFloor(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal math floor.
+            </summary>
+            <param name="p">The p.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralMathExp(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal math exp.
+            </summary>
+            <param name="p">The p.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralMathAbs(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal math abs.
+            </summary>
+            <param name="p">The p.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralDateDiff(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            It should return a int with de difference in milliseconds between two dates.
+            It is used in a lot of tasks, ie: operations of timespams ej: timespam.Minutes or timespam.TotalMinutes
+            </summary>
+            <remarks>
+            In the implementation you should pay atention in overflows inside the database engine, since a difference of dates in milliseconds
+            maybe deliver a very big integer int. Ie: sqlServer provider  has to do some tricks with castings for implementing such requeriments.
+            </remarks>
+            <param name="dateA"></param>
+            <param name="dateB"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralDateTimePart(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Driver.SqlFunctionType)">
+            <summary>
+            Gets the literal date time part.
+            </summary>
+            <param name="dateExpression">The date expression.</param>
+            <param name="operationType">Type of the operation.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralStringIndexOf(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal string index of.
+            </summary>
+            <param name="baseString">The base string.</param>
+            <param name="searchString">The search string.</param>
+            <param name="startIndex">The start index.</param>
+            <param name="count">The count.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralStringIndexOf(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            This function should return the first index of the string 'searchString' 
+            in a string 'baseString' but starting in 'the startIndex' index . 
+            This can be a problem since most of database engines doesn't have such overload of SUBSTR, 
+            the base implementation do it in a pretty complex with the goal of be most generic syntax
+            as possible using a set of primitives(SUBSTRING(X,X,X) and STRPOS(X,X),+ , *).
+            This function is usually used in others methods of this sqlprovider.
+            </summary>
+            <remarks>
+            In the impleementation you should pay atention that in some database engines the indexes of arrays or strings are shifted one unit.
+            ie: in .NET stringExpression.Substring(2,2) should be translated as SUBSTRING (stringExpression, 3 , 2) since the first element in sqlserver in a SqlStatement has index=1
+            </remarks>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralStringIndexOf(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal string index of.
+            </summary>
+            <param name="baseString">The base string.</param>
+            <param name="searchString">The search string.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralStringRemove(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal string remove.
+            </summary>
+            <param name="baseString">The base string.</param>
+            <param name="startIndex">The start index.</param>
+            <param name="count">The count.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralStringRemove(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal string remove.
+            </summary>
+            <param name="baseString">The base string.</param>
+            <param name="startIndex">The start index.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralStringReplace(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal string replace.
+            </summary>
+            <param name="stringExpresision">The string expresision.</param>
+            <param name="searchString">The search string.</param>
+            <param name="replacementstring">The replacementstring.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralStringInsert(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal string insert.
+            </summary>
+            <param name="stringExpression">The string expression.</param>
+            <param name="position">The position.</param>
+            <param name="insertString">The insert string.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteral(Vita.Data.Linq.Translation.Expressions.SelectOperatorType,Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Returns an operation between two SELECT clauses (UNION, UNION ALL, etc.)
+            </summary>
+            <param name="selectOperator"></param>
+            <param name="selectA"></param>
+            <param name="selectB"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetParenthesis(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Places the expression into parenthesis
+            </summary>
+            <param name="a"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetColumn(System.String,System.String)">
+            <summary>
+            Returns a column related to a table.
+            Ensures about the right case
+            </summary>
+            <param name="table"></param>
+            <param name="column"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetColumn(System.String)">
+            <summary>
+            Returns a column related to a table.
+            Ensures about the right case
+            </summary>
+            <param name="column"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetFromClause(Vita.Data.Linq.Translation.SqlGen.SqlStatement[])">
+            <summary>
+            Joins a list of table selection to make a FROM clause
+            </summary>
+            <param name="tables"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetJoinClauses(Vita.Data.Linq.Translation.SqlGen.SqlStatement[])">
+            <summary>
+            Concatenates all join clauses
+            </summary>
+            <param name="joins"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetInnerJoinClause(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Returns an INNER JOIN syntax
+            </summary>
+            <param name="joinedTable"></param>
+            <param name="joinExpression"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLeftOuterJoinClause(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Returns a LEFT JOIN syntax
+            </summary>
+            <param name="joinedTable"></param>
+            <param name="joinExpression"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetRightOuterJoinClause(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Returns a RIGHT JOIN syntax
+            </summary>
+            <param name="joinedTable"></param>
+            <param name="joinExpression"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetWhereClause(Vita.Data.Linq.Translation.SqlGen.SqlStatement[])">
+            <summary>
+            Joins a list of conditions to make a WHERE clause
+            </summary>
+            <param name="wheres"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetHavingClause(Vita.Data.Linq.Translation.SqlGen.SqlStatement[])">
+            <summary>
+            Joins a list of conditions to make a HAVING clause
+            </summary>
+            <param name="havings"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetSelectClause(Vita.Data.Linq.Translation.SqlGen.SqlStatement[])">
+            <summary>
+            Joins a list of operands to make a SELECT clause
+            </summary>
+            <param name="selects"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetSelectDistinctClause(Vita.Data.Linq.Translation.SqlGen.SqlStatement[])">
+            <summary>
+            Joins a list of operands to make a SELECT clause
+            </summary>
+            <param name="selects"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetColumns">
+            <summary>
+            Returns all table columns (*)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetParameterName(System.String)">
+            <summary>
+            Returns a literal parameter name
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetTableAlias(System.String)">
+            <summary>
+            Returns a valid alias syntax for the given table
+            </summary>
+            <param name="nameBase"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralAdd(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal add.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralAddChecked(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal add checked.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralAnd(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal and.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralAndBitwise(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal and.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralAndAlso(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal and also.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralArrayLength(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the length of the literal array.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralArrayIndex(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the index of the literal array.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralCall(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal call.
+            </summary>
+            <param name="a">A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralCoalesce(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal coalesce.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralConditional(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal conditional.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <param name="c">The c.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralConvert(Vita.Data.Linq.Translation.SqlGen.SqlStatement,System.Type)">
+            <summary>
+            Gets the literal convert.
+            </summary>
+            <param name="a">A.</param>
+            <param name="newType">The new type.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralDivide(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal divide.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralEqual(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal equal.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralExclusiveOr(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal exclusive or.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralGreaterThan(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal greater than.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralGreaterThanOrEqual(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal greater than or equal.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralLeftShift(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal left shift.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralLessThan(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal less than.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralLessThanOrEqual(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal less than or equal.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralModulo(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal modulo.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralMultiply(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal multiply.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralMultiplyChecked(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal multiply checked.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralNegate(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal negate.
+            </summary>
+            <param name="a">A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralUnaryPlus(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal unary plus.
+            </summary>
+            <param name="a">A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralNegateChecked(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal negate checked.
+            </summary>
+            <param name="a">A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralNot(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal not.
+            </summary>
+            <param name="a">A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralNotEqual(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal not equal.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralOr(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal or.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralOrElse(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal or else.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralPower(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal power.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralRightShift(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal right shift.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralSubtract(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal subtract.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralSubtractChecked(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal subtract checked.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralIsNull(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal is null.
+            </summary>
+            <param name="a">A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralIsNotNull(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal is not null.
+            </summary>
+            <param name="a">A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralStringConcat(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal string concat.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralStringLength(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the length of the literal string.
+            </summary>
+            <param name="a">A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralStringToUpper(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal string to upper.
+            </summary>
+            <param name="a">A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralStringToLower(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal string to lower.
+            </summary>
+            <param name="a">A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralTrim(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal trim.
+            </summary>
+            <param name="a">A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralLeftTrim(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal L trim.
+            </summary>
+            <param name="a">A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralRightTrim(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal R trim.
+            </summary>
+            <param name="a">A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralSubString(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal sub string.
+            </summary>
+            <param name="baseString">The base string.</param>
+            <param name="startIndex">The start index.</param>
+            <param name="count">The count.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralSubString(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal sub string.
+            </summary>
+            <param name="baseString">The base string.</param>
+            <param name="startIndex">The start index.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralLike(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal like.
+            </summary>
+            <param name="column">A.</param>
+            <param name="pattern">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralCount(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal count.
+            </summary>
+            <param name="a">A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralMin(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal min.
+            </summary>
+            <param name="a">A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralMax(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal max.
+            </summary>
+            <param name="a">A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralSum(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal sum.
+            </summary>
+            <param name="a">A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralAverage(Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal average.
+            </summary>
+            <param name="a">A.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralIn(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal in.
+            </summary>
+            <param name="a">A.</param>
+            <param name="b">The b.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetNullLiteral">
+            <summary>
+            Gets the null literal.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralLimit(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Returns a LIMIT clause around a SELECT clause
+            </summary>
+            <param name="select">SELECT clause</param>
+            <param name="limit">limit value (number of columns to be returned)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralLimit(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Returns a LIMIT clause around a SELECT clause, with offset
+            </summary>
+            <param name="select">SELECT clause</param>
+            <param name="limit">limit value (number of columns to be returned)</param>
+            <param name="offset">first row to be returned (starting from 0)</param>
+            <param name="offsetAndLimit">limit+offset</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteral(System.String)">
+            <summary>
+            Gets the literal for a given string.
+            </summary>
+            <param name="str">The STR.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralList(System.Collections.IList)">
+            <summary>
+            Gets the literal array.
+            </summary>
+            <param name="list">The array.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetOrderByColumn(Vita.Data.Linq.Translation.SqlGen.SqlStatement,System.Boolean)">
+            <summary>
+            Returns an ORDER criterium
+            </summary>
+            <param name="expression"></param>
+            <param name="descending"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetOrderByClause(Vita.Data.Linq.Translation.SqlGen.SqlStatement[])">
+            <summary>
+            Joins a list of conditions to make a ORDER BY clause
+            </summary>
+            <param name="orderBy"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetGroupByClause(Vita.Data.Linq.Translation.SqlGen.SqlStatement[])">
+            <summary>
+            Joins a list of conditions to make a GROUP BY clause
+            </summary>
+            <param name="groupBy"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralUnion(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal union.
+            </summary>
+            <param name="selectA">The select A.</param>
+            <param name="selectB">The select B.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralUnionAll(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal union all.
+            </summary>
+            <param name="selectA">The select A.</param>
+            <param name="selectB">The select B.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralIntersect(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal intersect.
+            </summary>
+            <param name="selectA">The select A.</param>
+            <param name="selectB">The select B.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetLiteralExcept(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement)">
+            <summary>
+            Gets the literal except.
+            </summary>
+            <param name="selectA">The select A.</param>
+            <param name="selectB">The select B.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetSafeName(System.String)">
+            <summary>
+            given 'User', return '[User]' to prevent a SQL keyword conflict
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.GetSafeNamePart(System.String)">
+            <summary>
+            Gets the safe name part.
+            </summary>
+            <param name="namePart">The name part.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.IsMadeSafe(System.String)">
+            <summary>
+            Determines whether [is made safe] [the specified name part].
+            </summary>
+            <param name="namePart">The name part.</param>
+            <returns>
+                <c>true</c> if [is made safe] [the specified name part]; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:Vita.Data.Driver.LinqSqlProvider.MakeNameSafe(System.String)">
+            <summary>
+            Makes the name safe.
+            </summary>
+            <param name="namePart">The name part.</param>
+            <returns></returns>
+        </member>
+        <member name="P:Vita.Data.Driver.LinqSqlProvider.NewLine">
+            <summary>
+            Gets the new line string.
+            </summary>
+            <value>The new line.</value>
+        </member>
+        <member name="P:Vita.Data.Driver.LinqSqlProvider.SafeNameStartQuote">
+            <summary>
+            Gets the safe name start quote.
+            </summary>
+            <value>The safe name start quote.</value>
+        </member>
+        <member name="P:Vita.Data.Driver.LinqSqlProvider.SafeNameEndQuote">
+            <summary>
+            Gets the safe name end quote.
+            </summary>
+            <value>The safe name end quote.</value>
+        </member>
+        <member name="T:Vita.Data.DbExecutionType">
+            <summary>Identifies the execution method of the DB command.</summary>
+        </member>
+        <member name="T:Vita.Data.IDirectDbAccessFacility">
+            <summary>Provides direct Db access. You can execute ADO.NET commands (SQL or stored procedures) using this facility.</summary>
+            <remarks>Use session.CreateFacility&lt;IDirectDbAccessFacility&gt;() extension method to create an instance. </remarks>
+        </member>
+        <member name="M:Vita.Data.IDirectDbAccessFacility.OpenConnection">
+            <summary>Opens the database connection associated with the facility and entity session. </summary>
+        </member>
+        <member name="M:Vita.Data.IDirectDbAccessFacility.CloseConnection">
+            <summary>Closes the database connection associated with the facility and entity session. </summary>
+        </member>
+        <member name="M:Vita.Data.IDirectDbAccessFacility.BeginTransaction(System.Data.IsolationLevel)">
+            <summary>Starts the transaction on the connection associated with the facility and entity session.</summary>
+            <param name="isolationLevel">Isolation level of the transaction.</param>
+        </member>
+        <member name="M:Vita.Data.IDirectDbAccessFacility.Commit">
+            <summary>Commits the transaction on the connection associated with the facility and entity session.</summary>
+        </member>
+        <member name="M:Vita.Data.IDirectDbAccessFacility.Abort">
+            <summary>Aborts the transaction on the connection associated with the facility and entity session.</summary>
+        </member>
+        <member name="M:Vita.Data.IDirectDbAccessFacility.ExecuteDbCommand(System.Data.IDbCommand,Vita.Data.DbExecutionType,System.Func{System.Data.IDataReader,System.Int32})">
+            <summary>Executes the DB command. The executed command (SQL and statistics) is logged to operation log.</summary>
+            <param name="command">The command to execute.</param>
+            <param name="executionType">The execution method to use.</param>
+            <param name="resultsReader">The results reader for SELECT commands. Optional. If your provide the reader delegate, 
+            the statistics (row count) are recorded into the log.</param>
+            <returns>The result returned by the execution method. </returns>
+            <remarks>
+            If an exception is thrown, the current transaction is aborted automatically. However, the connection is not closed
+            automatically.
+            </remarks>
+        </member>
+        <member name="P:Vita.Data.IDirectDbAccessFacility.DbConnection">
+            <summary>Gets the IDbConnection instance associated with the facility and entity session.</summary>
+        </member>
+        <member name="P:Vita.Data.IDirectDbAccessFacility.DbTransaction">
+            <summary>Gets the IDbTransaction instance associated with the facility and entity session.</summary>
+        </member>
+        <member name="T:Vita.Data.Linq.SqlQuery">
+            <summary>Represents a linq query, with SQL statement and parameter definitions. </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.SqlQuery.Parameters">
+            <summary> Parameters to be sent as SQL parameters.</summary>
+        </member>
+        <member name="F:Vita.Data.Linq.SqlQuery.ObjectMaterializer">
+            <summary>
+            Expression that creates a row object
+            Use GetRowObjectCreator() to access the object with type safety
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.SqlQuery.CanCache">
+            <summary>Indicates if SqlQuery may be cached.</summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.BuilderContext.ExternalValues">
+            <summary>Values coming from the code executing the query - parameters. Top-level parameters for the entire query.</summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.BuilderContext.EnumerateAllTables">
+            <summary>
+            Helper to enumerate all registered tables
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.BuilderContext.EnumerateScopeTables">
+            <summary>
+            Helper to enumerate all registered columns
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.BuilderContext.EnumerateScopeColumns">
+            <summary>
+            Helper to enumerate all registered columns
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.BuilderContext.NewQuote">
+            <summary>Creates a new BuilderContext where parameters have a local scope.</summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.BuilderContext.NewSelect">
+            <summary>Creates a new BuilderContext with a new query scope. </summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.BuilderContext.NewSisterSelect">
+            <summary>Creates a new BuilderContext with a new query scope with the same parent of the CurrentSelect. </summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.BuilderContext.NewParentSelect">
+            <summary>
+            Creates a new BuilderContext with a new query scope which is parent of the current one
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.Analyze(System.Linq.Expressions.Expression,System.Linq.Expressions.Expression,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Entry point for Analyzis
+            </summary>
+            <param name="expression"></param>
+            <param name="parameter"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.AnalyzeTake(System.Collections.Generic.IList{System.Linq.Expressions.Expression},Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Limits selection count
+            </summary>
+            <param name="parameters"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.AnalyzeSkip(System.Collections.Generic.IList{System.Linq.Expressions.Expression},Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Skip selection items
+            </summary>
+            <param name="parameters"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.AnalyzeScalar(System.String,System.Nullable{System.Int32},System.Collections.Generic.IList{System.Linq.Expressions.Expression},Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Registers a scalar method call for result
+            </summary>
+            <param name="methodName"></param>
+            <param name="limit"></param>
+            <param name="parameters"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.CheckWhere(System.Linq.Expressions.Expression,System.Collections.Generic.IList{System.Linq.Expressions.Expression},System.Int32,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Some methods, like Single(), Count(), etc. can get an extra parameter, specifying a restriction.
+            This method checks if the parameter is specified, and adds it to the WHERE clauses
+            </summary>
+            <param name="table"></param>
+            <param name="parameters"></param>
+            <param name="extraParameterIndex"></param>
+            <param name="builderContext"></param>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.AnalyzeSelect(System.Collections.Generic.IList{System.Linq.Expressions.Expression},Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Entry point for a Select()
+            static Select(this Expression table, λ(table))
+            </summary>
+            <param name="parameters"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.AnalyzeWhere(System.Collections.Generic.IList{System.Linq.Expressions.Expression},Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Entry point for a Where()
+            static Where(this Expression table, λ(table))
+            </summary>
+            <param name="parameters"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.AnalyzeLambda(System.Linq.Expressions.Expression,System.Collections.Generic.IList{System.Linq.Expressions.Expression},Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Handling a lambda consists in:
+            - filling its input parameters with what's on the stack
+            - using the body (parameters are registered in the context)
+            </summary>
+            <param name="expression"></param>
+            <param name="parameters"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.AnalyzeParameter(System.Linq.Expressions.Expression,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            When a parameter is used, we replace it with its original value
+            </summary>
+            <param name="expression"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.AnalyzeMember(System.Linq.Expressions.Expression,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Analyzes a member access.
+            This analyzis is down to top: the highest identifier is at bottom
+            </summary>
+            <param name="expression"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.AnalyzeMemberInit(System.Linq.Expressions.MemberInitExpression,System.Reflection.MemberInfo,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            This method analyzes the case of a new followed by a member access
+            for example new "A(M = value).M", where the Expression can be reduced to "value"
+            Caution: it may return null if no result is found
+            </summary>
+            <param name="expression"></param>
+            <param name="memberInfo"></param>
+            <param name="builderContext"></param>
+            <returns>A member initializer or null</returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.AnalyzeQuote(System.Linq.Expressions.Expression,System.Collections.Generic.IList{System.Linq.Expressions.Expression},Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            A Quote creates a new local context, outside which created parameters disappear
+            This is why we clone the BuilderContext
+            </summary>
+            <param name="expression"></param>
+            <param name="parameters"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.AnalyzeSelectMany(System.Collections.Generic.IList{System.Linq.Expressions.Expression},Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            SelectMany() joins tables
+            </summary>
+            <param name="parameters"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.GetExposingProperty(System.Reflection.MemberInfo)">
+            <summary> If memberInfo is a method related to a property, returns the PropertyInfo. </summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.AnalyzeJoin(System.Collections.Generic.IList{System.Linq.Expressions.Expression},Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Analyzes a Join statement (explicit join)
+            </summary>
+            <param name="parameters"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.AnalyzeGroupJoin(System.Collections.Generic.IList{System.Linq.Expressions.Expression},Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Analyzes a Join statement (explicit join)
+            </summary>
+            <param name="parameters"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.AnalyzeDistinct(System.Collections.Generic.IList{System.Linq.Expressions.Expression},Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            "Distinct" means select X group by X
+            </summary>
+            <param name="parameters"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.AnalyzeAny(System.Collections.Generic.IList{System.Linq.Expressions.Expression},Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Any() returns true if the given condition satisfies at least one of provided elements
+            </summary>
+            <param name="parameters"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.AnalyzeOrderBy(System.Collections.Generic.IList{System.Linq.Expressions.Expression},System.Boolean,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Registers ordering request
+            </summary>
+            <param name="parameters"></param>
+            <param name="descending"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.AnalyzeConstant(System.Linq.Expressions.Expression,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Analyzes constant expression value, and eventually extracts a table
+            </summary>
+            <param name="expression"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.AnalyzeInvoke(System.Linq.Expressions.Expression,System.Collections.Generic.IList{System.Linq.Expressions.Expression},Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Analyses InvokeExpression
+            </summary>
+            <param name="expression"></param>
+            <param name="parameters"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.CreateTableExpression(System.Linq.Expressions.Expression,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Registers the first table. Extracts the table type and registeres the piece
+            </summary>
+            <param name="requestingExpression"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.GetTable(System.Linq.Expressions.Expression,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Registers the first table. Extracts the table type and registeres the piece
+            </summary>
+            <param name="requestingExpression"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.BuildGroupByPairsReader(System.Linq.Expressions.LambdaExpression,System.Linq.Expressions.LambdaExpression,System.Linq.Expressions.ParameterExpression,System.Linq.Expressions.ParameterExpression,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Builds reader GroupBy producing intermediate key/value pairs; actual grouping will be performed in CLR layer.
+            </summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.IsSqlTier(System.Linq.Expressions.Expression,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Returns true if we must cut out the given Expression
+            </summary>
+            <param name="expression"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.CheckTableExpression(System.Linq.Expressions.Expression,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Checks any expression for a TableExpression, and eventually replaces it with the convenient columns selection
+            </summary>
+            <param name="expression"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.GetSelectTableExpression(Vita.Data.Linq.Translation.Expressions.TableExpression,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Replaces a table selection by a selection of all mapped columns (ColumnExpressions).
+            ColumnExpressions will be replaced at a later time by the tier splitter
+            </summary>
+            <param name="tableExpression"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.GetQueriedType(System.Linq.Expressions.Expression)">
+            <summary>
+            Returns a queried type from a given expression, or null if no type can be found
+            </summary>
+            <param name="expression"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.GetQueriedType(System.Type)">
+            <summary>
+            Extracts the type from the potentially generic type
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.GetParameterName(System.Linq.Expressions.Expression)">
+            <summary>
+            Returns the parameter name, if the Expression is a ParameterExpression, null otherwise
+            </summary>
+            <param name="expression"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.MergeParameters(System.Linq.Expressions.Expression,System.Collections.Generic.IEnumerable{System.Linq.Expressions.Expression})">
+            <summary>
+            Merges a parameter and a parameter list
+            </summary>
+            <param name="p1"></param>
+            <param name="p2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.GetRegisteredColumn(Vita.Data.Linq.Translation.Expressions.TableExpression,System.String,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Returns a registered column, or null if not found
+            This method requires the table to be already registered
+            </summary>
+            <param name="table"></param>
+            <param name="name"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.RegisterTable(Vita.Data.Linq.Translation.Expressions.TableExpression,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Returns an existing table or registers the current one
+            </summary>
+            <param name="tableExpression"></param>
+            <param name="builderContext"></param>
+            <returns>A registered table or the current newly registered one</returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.PromoteTable(Vita.Data.Linq.Translation.Expressions.TableExpression,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Promotes a table to a common parent between its current scope and our current scope
+            </summary>
+            <param name="tableExpression"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.FindCommonScope(Vita.Data.Linq.Translation.Expressions.SelectExpression,Vita.Data.Linq.Translation.Expressions.SelectExpression)">
+            <summary>
+            Find the common ancestor between two ScopeExpressions
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.RegisterColumn(Vita.Data.Linq.Translation.Expressions.TableExpression,System.String,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Registers a column
+            This method requires the table to be already registered
+            </summary>
+            <param name="table"></param>
+            <param name="name"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.RegisterColumn(Vita.Data.Linq.Translation.Expressions.TableExpression,System.Reflection.MemberInfo,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Registers a column with only a table and a MemberInfo (this is the preferred method overload)
+            </summary>
+            <param name="tableExpression"></param>
+            <param name="memberInfo"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.CreateTable(System.Type,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Creates a default TableExpression
+            </summary>
+            <param name="tableType"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.RegisterAssociation(Vita.Data.Linq.Translation.Expressions.TableExpression,System.Reflection.MemberInfo,System.Type,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Registers an association
+            </summary>
+            <param name="tableExpression">The table holding the member, to become the joinedTable</param>
+            <param name="tableMemberInfo"></param>
+            <param name="otherType"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.RegisterMetaTable(System.Type,System.Collections.Generic.IDictionary{System.Reflection.MemberInfo,Vita.Data.Linq.Translation.Expressions.SqlExpression},Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Registers a MetaTable
+            </summary>
+            <param name="metaTableType"></param>
+            <param name="aliases"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.RegisterWhere(System.Linq.Expressions.Expression,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Registers a where clause in the current context scope
+            </summary>
+            <param name="whereExpression"></param>
+            <param name="builderContext"></param>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.RegisterAllColumns(Vita.Data.Linq.Translation.Expressions.TableExpression,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Registers all columns of a table.
+            </summary>
+            <param name="tableExpression"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionDispatcher.RegisterOutputValue(System.Linq.Expressions.Expression,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Registers an expression to be returned by main request.
+            The strategy is to try to find it in the already registered parameters, and if not found, add it
+            </summary>
+            <param name="expression">The expression to be registered</param>
+            <param name="builderContext"></param>
+            <returns>Expression index</returns>
+        </member>
+        <member name="T:Vita.Data.Linq.Translation.ExpressionLanguageParser">
+            <summary>
+            Analyzes language patterns and replace them with standard expressions
+            </summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionLanguageParser.AnalyzeConvertToBoolean(System.Linq.Expressions.Expression)">
+            <summary>
+            Tests for Convert.ToBoolean()
+            </summary>
+            <param name="expression"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionLanguageParser.AnalyzeCompareString(System.Linq.Expressions.Expression)">
+            <summary>
+            Used to determine if the Expression is a VB CompareString
+            Returns an equivalent Expression if true
+            </summary>
+            <param name="expression"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionLanguageParser.GetComparedToZero(System.Linq.Expressions.Expression,System.Boolean@)">
+            <summary>
+            Determines if an expression is a comparison to 0
+            </summary>
+            <param name="expression"></param>
+            <param name="equals">True if ==, False if !=</param>
+            <returns>The compared Expression or null</returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionLanguageParser.IsZero(System.Linq.Expressions.Expression)">
+            <summary>
+            Determines if an expression is constant value 0
+            </summary>
+            <param name="expression"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Vita.Data.Linq.Translation.ExpressionMutatorExtensions">
+            <summary>
+            Extensions to Expression, to enumerate and dynamically change operands in a uniformized way
+            </summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionMutatorExtensions.GetOperands(System.Linq.Expressions.Expression)">
+            <summary>
+            Enumerates all subexpressions related to this one
+            </summary>
+            <param name="expression"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionMutatorExtensions.HaveOperandsChanged(System.Collections.Generic.IList{System.Linq.Expressions.Expression},System.Collections.Generic.IEnumerable{System.Linq.Expressions.Expression})">
+            <summary>
+            Determines if operands have changed for a given expression
+            </summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionMutatorExtensions.Evaluate(System.Linq.Expressions.Expression)">
+            <summary>
+            Returns the expression result
+            </summary>
+            <param name="expression"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionMutatorExtensions.Recurse(System.Linq.Expressions.Expression,System.Func{System.Linq.Expressions.Expression,System.Linq.Expressions.Expression})">
+            <summary>
+            Down-top pattern analysis.
+            </summary>
+            <param name="expression">The original expression</param>
+            <param name="analyzer"></param>
+            <returns>A new QueryExpression or the original one</returns>
+        </member>
+        <member name="T:Vita.Data.Linq.Translation.ExpressionOptimizer">
+            <summary>
+            Optimizes expressions (such as constant chains)
+            </summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionQualifier.GetPrecedence(System.Linq.Expressions.Expression)">
+            <summary>
+            Returns Expression precedence. Higher value means lower precedence.
+            http://en.csharp-online.net/ECMA-334:_14.2.1_Operator_precedence_and_associativity
+            We added the Clase precedence, which is the lowest
+            </summary>
+            <param name="expression"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.ExpressionQualifier.GetTier(System.Linq.Expressions.Expression)">
+            <summary>
+            Determines wether an expression can run in Clr or Sql
+            A request is valid is it starts with Clr only, followed by Any and ends (at bottom) with Sql.
+            With this, we can:
+            - Find the first point cut from Clr to Any
+            - Find the second point cut from Any to Sql
+            Select a strategy to load more or less the Clr or Sql engine
+            This is used only for SELECT clause
+            </summary>
+            <param name="expression"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Vita.Data.Linq.Translation.Expressions.ColumnExpression">
+            <summary>
+            Describes a column, related to a table
+            </summary>
+        </member>
+        <member name="T:Vita.Data.Linq.Translation.Expressions.IMutableExpression">
+            <summary>
+            Allows an Expression to enumerator its Operands and be mutated, ie changing its operands.
+            Depending on the Expression type (such as System.Linq.Expressions), a new copy may be returned.
+            </summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.Expressions.IMutableExpression.Mutate(System.Collections.Generic.IList{System.Linq.Expressions.Expression})">
+            <summary>Replaces operands and returns a corresponding expression.</summary>
+            <param name="operands">New operands.</param>
+            <returns>Mutated expression.</returns>
+        </member>
+        <member name="P:Vita.Data.Linq.Translation.Expressions.IMutableExpression.Operands">
+            <summary> Represents Expression operands, ie anything that is an expression. </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.ExpressionPrecedence.Primary">
+            <summary>
+            x.y  f(x)  a[x]  x++  x--  new typeof  checked  unchecked
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.ExpressionPrecedence.Unary">
+            <summary>
+            +  -  !  ~  ++x  --x  (T)x
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.ExpressionPrecedence.Multiplicative">
+            <summary>
+            *  /  %
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.ExpressionPrecedence.Additive">
+            <summary>
+            +  -
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.ExpressionPrecedence.Shift">
+            <summary>
+            &lt;&lt;  >>
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.ExpressionPrecedence.RelationalAndTypeTest">
+            <summary>
+            &lt;  >  &lt;=  >=  is  as
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.ExpressionPrecedence.Equality">
+            <summary>
+            ==  !=
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.ExpressionPrecedence.LogicalAnd">
+            <summary>
+            &amp;
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.ExpressionPrecedence.LogicalXor">
+            <summary>
+            ^
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.ExpressionPrecedence.LogicalOr">
+            <summary>
+            |
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.ExpressionPrecedence.ConditionalAnd">
+            <summary>
+            &amp;&amp;
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.ExpressionPrecedence.ConditionalOr">
+            <summary>
+            ||
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.ExpressionPrecedence.NullCoalescing">
+            <summary>
+            ??
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.ExpressionPrecedence.Conditional">
+            <summary>
+            ?:
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.ExpressionPrecedence.Assignment">
+            <summary>
+            Assignments and augmented assignments
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.ExpressionPrecedence.Clause">
+            <summary>
+            A SQL clause, FROM, WHERE, etc.
+            </summary>
+        </member>
+        <member name="T:Vita.Data.Linq.Translation.Expressions.ExternalValueExpression">
+            <summary>Represents external value - query parameter or value derived from it.</summary>
+        </member>
+        <member name="T:Vita.Data.Linq.Translation.Expressions.GroupExpression">
+            <summary>
+            A GroupExpression holds a grouped result
+            It is usually transparent, except for return value, where it mutates the type to IGrouping
+            </summary>
+        </member>
+        <member name="T:Vita.Data.Linq.Translation.Expressions.MetaTableExpression">
+            <summary>
+            A MetaTableExpression contains aliases for tables (used on joins)
+            </summary>
+        </member>
+        <member name="T:Vita.Data.Linq.Translation.Expressions.OrderByExpression">
+            <summary>
+            Represents a ORDER column to be sorted on
+            </summary>
+        </member>
+        <member name="T:Vita.Data.Linq.Translation.Expressions.SelectExpression">
+            <summary>
+            ScopeExpression describes a selection.
+            It can be present at top-level or as subexpressions
+            </summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.Expressions.OperandsMutableSqlExpression.Mutate2(System.Collections.Generic.IList{System.Linq.Expressions.Expression})">
+            <summary>
+            Must be implemented by inheritors. I had no better name. Suggestions welcome
+            </summary>
+            <param name="operands"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Vita.Data.Linq.Translation.Expressions.SqlFunctionExpression">
+            <summary>
+            Holds new expression types (sql related), all well as their operands
+            </summary>
+        </member>
+        <member name="T:Vita.Data.Linq.Translation.Expressions.SubSelectExpression">
+            <summary>
+            A table expression produced by a sub select, which work almost like any other table
+            Different joins specify different tables
+            </summary>
+        </member>
+        <member name="T:Vita.Data.Linq.Translation.Expressions.TableExpression">
+            <summary>
+            A table is a default table, or a joined table
+            Different joins specify different tables
+            </summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.Expressions.TableExpression.Join(Vita.Data.Linq.Translation.Expressions.TableJoinType,Vita.Data.Linq.Translation.Expressions.TableExpression,System.Linq.Expressions.Expression)">
+            <summary>
+            Set table join
+            </summary>
+            <param name="joinType"></param>
+            <param name="joinedTable"></param>
+            <param name="joinExpression"></param>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.Expressions.TableExpression.Join(Vita.Data.Linq.Translation.Expressions.TableJoinType,Vita.Data.Linq.Translation.Expressions.TableExpression,System.Linq.Expressions.Expression,System.String)">
+            <summary>
+            Set table join
+            </summary>
+            <param name="joinType"></param>
+            <param name="joinedTable"></param>
+            <param name="joinExpression"></param>
+            <param name="joinID"></param>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.Expressions.TableExpression.SetOuterJoin">
+            <summary>
+            Set the table outer join, depending on the current table location
+            Result can set the table to be left outer join or right outer join
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.TableJoinType.Default">
+            <summary>
+            No join specified
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.TableJoinType.Inner">
+            <summary>
+            Inner join, default case for joins
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.TableJoinType.LeftOuter">
+            <summary>
+            Left outer join
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.TableJoinType.RightOuter">
+            <summary>
+            Right outer join
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.Expressions.TableJoinType.FullOuter">
+            <summary>
+            Full outer join
+            </summary>
+        </member>
+        <member name="T:Vita.Data.Linq.Translation.Expressions.SqlExpressionType">
+            <summary>Special Expression types for Sql expressions. </summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SpecialExpressionTranslator.Translate(System.Linq.Expressions.Expression)">
+            <summary>
+            Translate a hierarchy's SpecialExpressions to Expressions
+            </summary>
+            <param name="expression"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SpecialExpressionTranslator.Translate(Vita.Data.Linq.Translation.Expressions.SqlFunctionExpression)">
+            <summary>
+            Translates a SpecialExpression to standard Expression equivalent
+            </summary>
+            <param name="specialExpression"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlBuilder.GetSortedTables(Vita.Data.Linq.Translation.Expressions.SelectExpression)">
+            <summary>
+            Returns a list of sorted tables, given a select expression.
+            The tables are sorted by dependency: independent tables first, dependent tables next
+            </summary>
+            <param name="selectExpression"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlBuilder.BuildSelectSql(Vita.Data.Linq.Translation.Expressions.SelectExpression,System.Boolean)">
+            <summary>
+            Main SQL builder
+            </summary>
+            <param name="selectExpression"></param>
+            <param name="isTop"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlBuilder.BuildExpression(System.Linq.Expressions.Expression)">
+            <summary>
+            The simple part: converts an expression to SQL
+            This is not used for FROM clause
+            </summary>
+            <param name="expression"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlBuilder.IsConversionRequired(System.Linq.Expressions.UnaryExpression)">
+            <summary>
+            Determines if a SQL conversion is required
+            </summary>
+            <param name="expression"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Vita.Data.Linq.Translation.SqlGen.SqlLiteralPart">
+            <summary>
+            Represents a literal SQL part
+            </summary>
+        </member>
+        <member name="T:Vita.Data.Linq.Translation.SqlGen.SqlPart">
+            <summary>
+            An SqlPart is a constitutive string of SQL query
+            </summary>
+        </member>
+        <member name="P:Vita.Data.Linq.Translation.SqlGen.SqlPart.Sql">
+            <summary>
+            The resulting SQL string
+            </summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlLiteralPart.#ctor(System.String,System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Vita.Data.Linq.Translation.SqlGen.SqlLiteralPart"/> class.
+            </summary>
+            <param name="literal">The literal.</param>
+            <param name="type">Type.</param>
+        </member>
+        <member name="P:Vita.Data.Linq.Translation.SqlGen.SqlLiteralPart.Sql">
+            <summary>
+            The resulting SQL string
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Vita.Data.Linq.Translation.SqlGen.SqlLiteralPart.Literal">
+            <summary>
+            Literal SQL used as is
+            </summary>
+        </member>
+        <member name="T:Vita.Data.Linq.Translation.SqlGen.SqlParameterPart">
+            <summary>
+            SqlPart exposing a parameter
+            </summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlParameterPart.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Vita.Data.Linq.Translation.SqlGen.SqlParameterPart"/> class.
+            </summary>
+            <param name="parameter">The parameter.</param>
+            <param name="alias">The alias.</param>
+        </member>
+        <member name="P:Vita.Data.Linq.Translation.SqlGen.SqlParameterPart.Sql">
+            <summary>
+            The SQL part is the literal parameter
+            </summary>
+        </member>
+        <member name="P:Vita.Data.Linq.Translation.SqlGen.SqlParameterPart.Parameter">
+            <summary>
+            Literal parameter to be used
+            </summary>
+        </member>
+        <member name="P:Vita.Data.Linq.Translation.SqlGen.SqlParameterPart.Alias">
+            <summary>
+            Raw parameter name
+            </summary>
+        </member>
+        <member name="T:Vita.Data.Linq.Translation.SqlGen.SqlStatement">
+            <summary>
+            An SqlStatement is a literal SQL request, composed of different parts (SqlPart)
+            each part being either a parameter or a literal string
+            </summary>
+        </member>
+        <member name="F:Vita.Data.Linq.Translation.SqlGen.SqlStatement.Empty">
+            <summary>
+            Empty SqlStatement, used to build new statements
+            </summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatement.GetEnumerator">
+            <summary>
+            Enumerates all parts
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatement.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Enumerates all parts
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatement.ToString">
+            <summary>
+            Combines all parts, in correct order
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatement.Join(Vita.Data.Linq.Translation.SqlGen.SqlStatement,System.Collections.Generic.IList{Vita.Data.Linq.Translation.SqlGen.SqlStatement})">
+            <summary>
+            Joins SqlStatements into a new SqlStatement
+            </summary>
+            <param name="sqlStatement"></param>
+            <param name="sqlStatements"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatement.Join(Vita.Data.Linq.Translation.SqlGen.SqlStatement,Vita.Data.Linq.Translation.SqlGen.SqlStatement[])">
+            <summary>
+            Joins SqlStatements into a new SqlStatement
+            </summary>
+            <param name="sqlStatement"></param>
+            <param name="sqlStatements"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatement.Format(System.String,System.Collections.Generic.IList{Vita.Data.Linq.Translation.SqlGen.SqlStatement})">
+            <summary>
+            Formats an SqlStatement
+            </summary>
+            <param name="format"></param>
+            <param name="sqlStatements"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatement.Format(System.String,Vita.Data.Linq.Translation.SqlGen.SqlStatement[])">
+            <summary>
+            Formats the specified text.
+            </summary>
+            <param name="format">The format.</param>
+            <param name="sqlStatements">The SQL statements.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatement.Replace(System.String,System.String,System.Boolean)">
+            <summary>
+            Replaces all text occurrences in the SqlStatement
+            </summary>
+            <param name="find"></param>
+            <param name="replace"></param>
+            <param name="ignoreCase"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatement.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Vita.Data.Linq.Translation.SqlGen.SqlStatement"/> class.
+            </summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatement.#ctor(System.Collections.Generic.IEnumerable{Vita.Data.Linq.Translation.SqlGen.SqlStatement})">
+            <summary>
+            Builds an SqlStatement by concatenating several statements
+            </summary>
+            <param name="sqlStatements"></param>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatement.#ctor(Vita.Data.Linq.Translation.SqlGen.SqlStatement[])">
+            <summary>
+            Builds SqlStatement
+            </summary>
+            <param name="sqlStatements"></param>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatement.#ctor(Vita.Data.Linq.Translation.SqlGen.SqlPart[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Vita.Data.Linq.Translation.SqlGen.SqlStatement"/> class.
+            </summary>
+            <param name="sqlParts">The SQL parts.</param>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatement.#ctor(System.Collections.Generic.IEnumerable{Vita.Data.Linq.Translation.SqlGen.SqlPart})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Vita.Data.Linq.Translation.SqlGen.SqlStatement"/> class.
+            </summary>
+            <param name="sqlParts">The SQL parts.</param>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatement.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Vita.Data.Linq.Translation.SqlGen.SqlStatement"/> class.
+            </summary>
+            <param name="sql">The SQL.</param>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatement.op_Implicit(System.String)~Vita.Data.Linq.Translation.SqlGen.SqlStatement">
+            <summary>
+            Converts a string to an SqlStatement
+            </summary>
+            <param name="sql"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Vita.Data.Linq.Translation.SqlGen.SqlStatement.Count">
+            <summary>
+            Returns the number of parts present
+            </summary>
+        </member>
+        <member name="P:Vita.Data.Linq.Translation.SqlGen.SqlStatement.Item(System.Int32)">
+            <summary>
+            Returns part at given index
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Vita.Data.Linq.Translation.SqlGen.SqlStatementBuilder">
+            <summary>
+            An SqlStatement is a literal SQL request, composed of different parts (SqlPart)
+            each part being either a parameter or a literal string
+            </summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatementBuilder.Append(System.Collections.Generic.IList{Vita.Data.Linq.Translation.SqlGen.SqlPart})">
+            <summary>
+            Creates a new SqlStatement based on the current and appending new SqlParts
+            </summary>
+            <param name="newParts"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatementBuilder.InsertPart(System.Collections.Generic.IList{Vita.Data.Linq.Translation.SqlGen.SqlPart},System.Int32,Vita.Data.Linq.Translation.SqlGen.SqlPart)">
+            <summary>
+            Appends a single part, including (useless) optimizations
+            </summary>
+            <param name="parts"></param>
+            <param name="index"></param>
+            <param name="part"></param>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatementBuilder.AddPart(System.Collections.Generic.IList{Vita.Data.Linq.Translation.SqlGen.SqlPart},Vita.Data.Linq.Translation.SqlGen.SqlPart)">
+            <summary>
+            Adds the part to the given parts list.
+            </summary>
+            <param name="parts">The parts.</param>
+            <param name="part">The part.</param>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatementBuilder.AppendJoin(Vita.Data.Linq.Translation.SqlGen.SqlStatement,System.Collections.Generic.IList{Vita.Data.Linq.Translation.SqlGen.SqlStatement})">
+            <summary>
+            Joins statements, separated by a given statement
+            </summary>
+            <param name="sqlStatement"></param>
+            <param name="sqlStatements"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatementBuilder.AppendFormat(System.String,System.Collections.Generic.IList{Vita.Data.Linq.Translation.SqlGen.SqlStatement})">
+            <summary>
+            Creates an SQL statement based on a format string and SqlStatements as arguments
+            </summary>
+            <param name="format"></param>
+            <param name="sqlStatements"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatementBuilder.AppendFormat(System.String,Vita.Data.Linq.Translation.SqlGen.SqlStatement[])">
+            <summary>
+            Formats an SqlStatement from a given string format
+            </summary>
+            <param name="format"></param>
+            <param name="sqlStatements"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatementBuilder.Append(System.Collections.Generic.IList{Vita.Data.Linq.Translation.SqlGen.SqlStatement})">
+            <summary>
+            Appends a bunch of sqlStatements to the current one
+            </summary>
+            <param name="sqlStatements"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatementBuilder.Append(Vita.Data.Linq.Translation.SqlGen.SqlStatement[])">
+            <summary>
+            Appends sqlStatements to the current one
+            </summary>
+            <param name="newStatements"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatementBuilder.Replace(System.String,System.String,System.Boolean)">
+            <summary>
+            Replaces the specified text, optionally ignoring the case.
+            The method does not replace cross-parts text
+            </summary>
+            <param name="oldText">The old text.</param>
+            <param name="newText">The new text.</param>
+            <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatementBuilder.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Vita.Data.Linq.Translation.SqlGen.SqlStatementBuilder"/> class.
+            </summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatementBuilder.#ctor(Vita.Data.Linq.Translation.SqlGen.SqlStatement[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Vita.Data.Linq.Translation.SqlGen.SqlStatementBuilder"/> class.
+            </summary>
+            <param name="sqlStatements">The SQL statements.</param>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlGen.SqlStatementBuilder.ToSqlStatement">
+            <summary>
+            Gets the built SqlStatement.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Vita.Data.Linq.Translation.SqlGen.SqlStatementBuilder.Item(System.Int32)">
+            <summary>
+            Returns part at given index
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Vita.Data.Linq.Translation.SqlQueryBuilder">
+            <summary>
+            Full query builder, with cache management
+            1. Parses Linq Expression
+            2. Generates SQL
+            </summary>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlQueryBuilder.BuildSelectExpression(Vita.Data.Linq.Translation.ExpressionChain,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Builds and chains the provided Expressions
+            </summary>
+            <param name="expressionChain"></param>
+            <param name="builderContext"></param>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlQueryBuilder.FindExpressionsByName(System.String,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Finds all registered tables or columns with the given name.
+            We exclude parameter because they won't be prefixed/suffixed the same way (well, that's a guess, I hope it's a good one)
+            </summary>
+            <param name="name"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlQueryBuilder.CheckTablesAlias(Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Give all non-aliased tables a name
+            </summary>
+            <param name="builderContext"></param>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlQueryBuilder.BuildSelectExpression(Vita.Data.Linq.Translation.ExpressionChain,System.Linq.Expressions.Expression,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Builds the ExpressionQuery main Expression, given a Table (or projection) expression
+            </summary>
+            <param name="expressions"></param>
+            <param name="tableExpression"></param>
+            <param name="builderContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlQueryBuilder.BuildOffsetsAndLimits(Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            This is a hint for SQL generations
+            </summary>
+            <param name="builderContext"></param>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlQueryBuilder.CompileObjectMaterializer(Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Builds the delegate to create a row
+            </summary>
+            <param name="builderContext"></param>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlQueryBuilder.ProcessExpressions(System.Func{System.Linq.Expressions.Expression,Vita.Data.Linq.Translation.BuilderContext,System.Linq.Expressions.Expression},System.Boolean,Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Processes all expressions in query, with the option to process only SQL targetting expressions
+            This method is generic, it receives a delegate which does the real processing
+            </summary>
+            <param name="processor"></param>
+            <param name="processOnlySqlParts"></param>
+            <param name="builderContext"></param>
+        </member>
+        <member name="M:Vita.Data.Linq.Translation.SqlQueryBuilder.OptimizeQuery(Vita.Data.Linq.Translation.BuilderContext)">
+            <summary>
+            Optimizes the query by optimizing subexpressions, and preparsing constant expressions
+            </summary>
+            <param name="builderContext"></param>
+        </member>
+        <member name="T:Vita.Data.Model.Construction.DbModelBuilder">
+            <summary>Builds Db model from entity model.</summary>
+        </member>
+        <member name="M:Vita.Data.Model.DbModel.#ctor(Vita.Entities.EntityApp,Vita.Data.Model.DbModelConfig)">
+            <summary>Constructs DbModel from EntityModel.</summary>
+            <param name="entityApp"></param>
+            <param name="config"></param>
+        </member>
+        <member name="M:Vita.Data.Model.DbModel.#ctor(Vita.Data.Model.DbModelConfig)">
+            <summary>Constructs an empty DbModel. This constructor is used for models loaded from database. </summary>
+            <param name="config">DB model config object.</param>
+        </member>
+        <member name="T:Vita.Data.Model.DbNamedObjectType">
+            <summary> Enumerates objects with names. </summary>
+        </member>
+        <member name="T:Vita.Data.Model.DbNamingPolicy">
+            <summary>A class providing default methods for constructing database object names. </summary>
+            <remarks>Override methods in this class to customize the naming behavior.</remarks>
+        </member>
+        <member name="M:Vita.Data.Model.DbNamingPolicy.CheckName(Vita.Data.Model.DbNamedObjectType,System.String,System.Object)">
+            <summary> Called by the system to let application adjust the name of a database object - table, column, key, etc.</summary>
+            <param name="objectType">The object type.</param>
+            <param name="name">The automatically generated name.</param>
+            <param name="objectInfo">The metadata info for the object.</param>
+            <returns>Adjusted name.</returns>
+        </member>
+        <member name="M:Vita.Data.Model.DbNamingPolicy.ConstructDbCommandName(Vita.Entities.Model.EntityCommand,System.String,System.String,System.String)">
+            <summary>Constructs the default name for a stored procedure.</summary>
+            <param name="command">Entity command.</param>
+            <param name="tableName">The table name.</param>
+            <param name="operation">Operation; usually a type of a CRUD command.</param>
+            <param name="suffix">Exra suffix, usually one or more columns involved in the operation.</param>
+            <returns>The procedure name.</returns>
+            <remarks>Constructs the name of db command (stored procedure) by combining Table name, operation and optionally
+            the list of columns involved. For ex: ProductSelectByName.</remarks>
+        </member>
+        <member name="F:Vita.Data.Model.Management.DbModelUpdateMethod.Auto">
+            <summary>Automatic, updating from code at application startup. Typical for development installations. </summary>
+        </member>
+        <member name="F:Vita.Data.Model.Management.DbModelUpdateMethod.Manual">
+            <summary>Manually, using model update tools (DIME). Typical for staging/shared and production environments.
+            </summary>
+        </member>
+        <member name="T:Vita.Data.Model.Management.DdlScriptType">
+            <summary>Identifies script type and determines the default execution order of SQL scripts for changing the DB model. </summary>
+        </member>
+        <member name="M:Vita.Data.Model.Management.DbModelUpdateManager.UpdateDbModel">
+            <summary>
+            Performs Db model update actions, depending on instance type (dev, staging, production). 
+            </summary>
+        </member>
+        <member name="T:Vita.Data.DataAccessService">
+            <summary>Manages access to one or more physical databases.  </summary>
+        </member>
+        <member name="T:Vita.Entities.Services.Implementations.IEntityService">
+            <summary>An optional interface to initialize/shutdown a non-module service added to Services collection of EntityApp. 
+            Module-based services - when an EntityModule implements a service - are initialized through overridable Init method. 
+            </summary>
+        </member>
+        <member name="M:Vita.Entities.Services.Implementations.IEntityService.Init(Vita.Entities.EntityApp)">
+            <summary>Notifies that entity app is inititalizing. </summary>
+            <param name="app">Entity app.</param>
+            <remarks>This method is invoked very early in application initialization. All services must be registered at this point. 
+            The service can use this method to link to other services. 
+            </remarks>
+        </member>
+        <member name="T:Vita.Entities.Services.IDataAccessService">
+            <summary>Provides an interface to the databases. The main purpose is to manage access to one or more databases undlerlying 
+            the entity model. </summary>
+            <remarks>Manages access to one or more physical databases with associated cache.</remarks>
+        </member>
+        <member name="T:Vita.Data.IDataSourceManagementService">
+            <summary>Management of data sources inside data access service. </summary>
+        </member>
+        <member name="P:Vita.Data.Database.ConnectionString">
+            <summary>Connection string.</summary>
+        </member>
+        <member name="T:Vita.Data.DataConnection">
+            <summary>
+            A wrapper class for IDbConnection, IDbTransaction objects and some utility methods.
+            </summary>
+        </member>
+        <member name="T:Vita.Data.DataSource">
+            <summary>DataSource is a tuple combining a Database and associated data cache.</summary>
+            <remarks>All select operations are first checked with cache, then submitted to the database.</remarks>
+        </member>
+        <member name="M:Vita.Data.MsSql.MsSqlDbDriver.Create(System.String)">
+            <summary>Automatically detects server version using provided connection string and returns a driver object with appropriate version.</summary>
+            <param name="connectionString">Connection string to use to detect server version.</param>
+            <returns>An driver instance.</returns>
+        </member>
+        <member name="M:Vita.Data.MsSql.MsSqlLinqSqlProvider.GetSubQueryAsAlias(System.String,System.String)">
+            <summary>
+            Returns a table alias
+            Ensures about the right case
+            </summary>
+            <param name="subquery"></param>
+            <param name="alias"></param>
+            <returns></returns>
+        </member>
+        <member name="F:Vita.Entities.Caching.CacheSettings.LocalSparseCacheTypes">
+            <summary>Local sparse cache is cache associated with OperationContext. It serves cached records to multiple entity sessions 
+            associated with the context. For Web applications, the lifespan of the cache is one web request (same as operation context). 
+            </summary>
+        </member>
+        <member name="F:Vita.Entities.Caching.CacheSettings.SparseCacheTypes">
+            <summary>Global sparse cache types. Sparse cache holds single records and associated with a particular database. </summary>
+        </member>
+        <member name="F:Vita.Entities.Caching.CacheSettings.FullSetCacheTypes">
+            <summary>Global full-set cache types. Full set cache holds entire tables in cache and serves all requests for data, 
+            including LINQ queries. </summary>
+        </member>
+        <member name="T:Vita.Entities.Caching.CacheQueryRewriter.CloneCallInjector">
+            <summary> Injects an call to a method that clones the returned entities and attaches them to the calling session.</summary>
+        </member>
+        <member name="T:Vita.Entities.Linq.EntityQueryData">
+            <summary>Contains basic information about the query. Produced by the QueryExpressionAnalyzer.</summary>
+            <remarks> Contains query parameter values and cache key - this data allows looking up translated query definition from query cache
+            and execute using current parameters. 
+            </remarks>
+        </member>
+        <member name="T:Vita.Entities.Linq.QueryExpressionAnalyzer">
+            <summary>Performs initial query analysis, computes cache key and values of parameters. </summary>
+        </member>
+        <member name="T:Vita.Entities.DbConnectionReuseMode">
+            <summary>Determines if DB connection should be kept open in EntitySession. </summary>
+        </member>
+        <member name="F:Vita.Entities.DbConnectionReuseMode.NoReuse">
+            <summary>Do not reuse connection, close it immediately after operation completes. </summary>
+        </member>
+        <member name="F:Vita.Entities.DbConnectionReuseMode.KeepOpen">
+            <summary>
+            Do not close connection, wait for next operation. Best for Web applications. 
+            At the end of web request processing all open connections will be closed anyway. 
+            </summary>
+        </member>
+        <member name="T:Vita.Entities.CacheType">
+            <summary>Cache type, identifies type of cache that should be used for an entity. </summary>
+        </member>
+        <member name="T:Vita.Entities.FuncExtensions">
+            <summary>
+            Extension methods used in building dynamic LINQ expressions, typically in search queries. 
+            </summary>
+        </member>
+        <member name="M:Vita.Entities.Model.CustomBitArray.GetArrayLength(System.Int32,System.Int32)">
+             <summary>
+             Used for conversion between different representations of bit array.
+             Returns (n+(div-1))/div, rearranged to avoid arithmetic overflow. 
+             For example, in the bit to int case, the straightforward calc would
+             be (n+31)/32, but that would cause overflow. So instead it's 
+             rearranged to ((n-1)/32) + 1, with special casing for 0. 
+            
+             Usage: 
+             GetArrayLength(77, BitsPerInt32): returns how many ints must be
+             allocated to store 77 bits.
+             </summary>
+             <param name="n"></param> 
+             <param name="div">use a conversion constant, e.g. BytesPerInt32 to get
+             how many ints are required to store n bytes</param> 
+             <returns></returns> 
+        </member>
+        <member name="M:Vita.Common.Graphs.Graph.BuildScc">
+            <summary>Builds SCC for a graph. Sets SCC index for each vertex. </summary>
+            <returns>The top index of SCC.</returns>
+        </member>
+        <member name="M:Vita.Common.LoggingExtensions.AddValue(System.Exception,System.String,System.Object,System.String)">
+            <summary>Adds value to Exception.Data dictionary.</summary>
+            <param name="exception">The target exception.</param>
+            <param name="name">Value (parameter) name.</param>
+            <param name="value">The value to add.</param>
+            <param name="doNotUse">Do not use. Filled automatically with method name and prepended to value name in the dictionary.</param>
+        </member>
+        <member name="T:Vita.Entities.Runtime.WebTokenInfo">
+            <summary>Describes a web token - header or cookie.</summary>
+            <remarks><para>This class is not dependent on Web/HTTP .NET assemblies, but provides an easy bridge into Web server functionality from core ORM code. 
+            Modules and code dependent on information in Web request/response headers or cookies can access this information through WebCallContext instance
+            available as a property on OperationContext instance. WebTokenInfo helps to describe the used header or cookie at configuration/startup time.
+            For example, PersistentSessionModule uses an instance of WebTokenInfo (describing UserSessionToken) in its settings to setup 
+            the automatic process of looking up user's session and attaching it to current operation context. </para>
+            <para>This class logically belongs to Vita.Web assembly; however, declaring it in Vita.Core provides access to it by lower-level ORM modules. 
+            </para>
+            </remarks>
+        </member>
+        <member name="T:Vita.Entities.ClientFaultCodes">
+            <summary>Standard code values used in ClientFault.Code field for some common cases.</summary>
+        </member>
+        <member name="T:Vita.Entities.ClientFaultList">
+            <summary>Thread-safe container for client faults. Exposed in OperationContext.ClientFaults property.</summary>
+        </member>
+        <member name="T:Vita.Entities.OperationAbortException">
+            <summary> An exception thrown when current operation(s) were aborted due to external error (invalid input) and not
+            due to system internal failure. </summary>
+            <remarks>A simple example is a client fault - invalid data submitted from the client. 
+            Other examples - concurrency violation, unique index violation.
+            </remarks>
+        </member>
+        <member name="F:Vita.Entities.OperationAbortException.LogAsError">
+            <summary>Indicates if error should be logged as serious error in error log. 
+            The application code can set this value explicitly after creating exception object. 
+            In most cases this value is false. For other exceptions (ModelStateException) we might set it to true to log the fact that 
+            client sumbitted invalid info that failed to deserialize. 
+            </summary>
+        </member>
+        <member name="F:Vita.Entities.OperationAbortException.ReasonCode">
+            <summary>
+            Indicates error type; for standard errors contains one of the constants in the OpeationAbortReasons static class.  
+            </summary>
+        </member>
+        <member name="T:Vita.Entities.DataAccessException">
+            <summary>A wrapper for runtime exception in the database. 
+            This exception is used to 'unify' different types of data exceptions for different providers.</summary>
+            <remarks>
+            The original database exception is saved in the Exception.Inner property. 
+            Using this exception helps making the business code to be more data-provider independent. 
+            </remarks>
+        </member>
+        <member name="T:Vita.Entities.EntityAttribute">
+            <summary>Marks an interface as an Entity. </summary>
+        </member>
+        <member name="T:Vita.Entities.ForEntityAttribute">
+            <summary> Explicitly specifies target entity for the companion type. </summary>
+        </member>
+        <member name="T:Vita.Entities.ColumnAttribute">
+            <summary>
+            Provides information (column name) about underlying database column for an entity property. Optional.
+            </summary>
+        </member>
+        <member name="T:Vita.Entities.NoColumnAttribute">
+            <summary> Specifies that entity property is non-persistent, exists only in memory and has no underlying database column. </summary>
+        </member>
+        <member name="T:Vita.Entities.SizeAttribute">
+            <summary>Specifies a maximum length of a char or binary column (char, nvarchar(*)) in the database. </summary>
+            <remarks>You can specify size value directly, or your can reference the size saved in SizeTable by code.
+            If you use size code, the system looks up the size tables in entity module and then in the entity app. 
+            Uses codes defined in Sizes static class, or define your own codes. During module/app setup, 
+            specify values for size codes you used. For standard sizes in Sizes class system provides default values. 
+            This facility allows customizing entity definitions (column sizes) in imported modules at app level. 
+            You can provide size code and default size value - default will be used if the value for size code is not specified. 
+            </remarks>
+        </member>
+        <member name="T:Vita.Entities.NullableAttribute">
+            <summary>
+            Marks property as nullable. Can be placed on properties of type string, Entity reference or even ValueType. 
+            </summary>
+            <remarks>
+            Strings and entity-type properties are not nullable by default; you have to add this attribute to make them
+            nullable. Value types (int, Guid, etc) can also be made nullable. One way is to use the Nullable&lt;...&gt; 
+            derived types (like "int?") for property types. In this case you do not need this attribute. The other method 
+            is to mark the value type property with this attribute. In this case, the default(T) value identifies the 
+            NULL value in database column. The system makes the substitution automatically.
+            Entity ref properties are not nullable by default.
+            </remarks>
+        </member>
+        <member name="T:Vita.Entities.PrimaryKeyAttribute">
+            <summary> Identifies a primary key. Can be placed on a property (without parameters), 
+            or on an entity with a list of column names as parameter.
+            </summary>
+        </member>
+        <member name="T:Vita.Entities.OneToManyAttribute">
+            <summary>Identifies the many-to-one relationship and provides additonal information about it. Optional. </summary>
+            <remarks>
+            Placed on entity-list property (of parent entity) in one-to-many relationship. 
+            Optional; use it when you need to explicitly specify the property (foreign key) on child entity that points back to "this" entity.
+            For example, there may be more than one property that points back to this entity - in this case you need to specify the property
+            name explicitly using this attribute.
+            </remarks>
+        </member>
+        <member name="P:Vita.Entities.OneToManyAttribute.ThisEntityRef">
+            <summary>The name of the property on the target (list member) entity that points back to "this" property in one-to-many relationships.
+            </summary>
+        </member>
+        <member name="T:Vita.Entities.ManyToManyAttribute">
+            <summary>
+            Identifies a member (which must be an entity list) as referencing other entity set through many-to-many relationship.
+            Specifies the "link" entity that implements many-to-many linking.
+            </summary>
+        </member>
+        <member name="P:Vita.Entities.ManyToManyAttribute.LinkEntity">
+            <summary>
+            The type of "link" entity (table) that implements many-to-many linking. Required.
+            </summary>
+        </member>
+        <member name="P:Vita.Entities.ManyToManyAttribute.ThisEntityRef">
+            <summary>
+            Specifies the property name on the link entity that references "this" entity. Optional. 
+            </summary>
+            <remarks>
+            If this attribute is not present, the system automatically finds the member by its type. 
+            Use this attribute if there is more than one member on the target entity that points to the "other" entity.
+            </remarks>
+        </member>
+        <member name="P:Vita.Entities.ManyToManyAttribute.OtherEntityRef">
+            <summary>
+            Specifies the property name on the link entity that references the "other" entity in many-to-many relationship. Optional. 
+            </summary>
+            <remarks>
+            If this attribute is not present, the system automatically finds the member by its type. 
+            Use this attribute if there is more than one member on the target entity that points back to this entity.
+            </remarks>
+        </member>
+        <member name="T:Vita.Entities.EntityRefAttribute">
+             <summary>Marks an entity references, optional. Might be used to specify the names of foreign key columns. </summary>
+            <remarks>The primary use is for reverse-engineering tool (database to c# code generator) to explicitly identify the foreign key columns in the database table.
+            </remarks> 
+        </member>
+        <member name="T:Vita.Entities.StartupFailureException">
+            <summary> Setup/activation failure exception. </summary>
+        </member>
+        <member name="T:Vita.Entities.Services.Implementations.LogFileWriter">
+            <summary>Spies on OperationLogService (which writes log to database) and copies all log entries to text file.</summary>
+        </member>
+        <member name="F:Vita.Entities.UserInfo.AltUserId">
+            <summary>Alternative User ID; for applications that use int/identity IDs</summary>
+        </member>
+        <member name="T:Vita.Entities.WebCallContext">
+            <summary>Provides an access to web-related parameters from the middle-tier code.</summary>
+            <remarks>
+            An instance of the <c>WebCallContext</c> is created by WebMessageHandler and saved as a property in the OperationContext instance. 
+            Api controller can retrieve an instance of the WebCallContext from request properties using <c>WebCallContextKey.</c>
+            WebCallContext provides access to cookies, headers, URL of the incoming request and allows to set specific HTTP response
+            status on the response. It allows setting response HTTP headers and cookies right from the middle-tier code. 
+            WebCallContext also serves as a container for log information which can be saved in the database upon completion 
+            of the request processing. 
+            </remarks>
+        </member>
+        <member name="M:Vita.Entities.EntitySessionExtensions.OpenSession(Vita.Entities.EntityApp)">
+            <summary>Opens anonymous session.</summary>
+            <param name="app">Entity app.</param>
+            <returns>Entity session instance.</returns>
+        </member>
+        <member name="M:Vita.Entities.EntitySessionExtensions.IsRegisteredEntity(Vita.Entities.IEntitySession,System.Type)">
+            <summary>Checks if an entity is registered with entity model. 
+            For use in customizable models when several versions might exist for different environments, 
+            and some entities are excluded in some models.</summary>
+            <param name="session">Entity session.</param>
+            <param name="entityType">The type of entity to check.</param>
+            <returns>True if the entity is part of the model; otherwise, false.</returns>
+        </member>
+        <member name="M:Vita.Entities.EntitySessionExtensions.EnableLog(Vita.Entities.IEntitySession,System.Boolean)">
+            <summary>Enables/disables local log temporarily.</summary>
+            <param name="session">Entity session.</param>
+            <param name="enable">Optional, boolean flag indicating whether log should enabled or disabled.</param>
+        </member>
+        <member name="M:Vita.Entities.EntitySessionExtensions.EnableCache(Vita.Entities.IEntitySession,System.Boolean)">
+            <summary>Enables/disables entity cache temporarily.</summary>
+            <param name="session">Entity session.</param>
+            <param name="enable">Optional, boolean flag indicating whether cache should enabled or disabled.</param>
+        </member>
+        <member name="M:Vita.Entities.EntitySessionExtensions.CreatePrimaryKey``1(Vita.Entities.IEntitySession,System.Object[])">
+            <summary>Creates a primary key object for an entity identified by type. Use it for entity types with composite primary key, to create a key instance from 
+            column values. The created key may be used in session.GetEntity() method as primary key parameter. </summary>
+            <typeparam name="TEntity">Entity type.</typeparam>
+            <param name="session">The entity session.</param>
+            <param name="values">Value(s) of the primary key columns.</param>
+            <returns>A primary key object.</returns>
+        </member>
+        <member name="M:Vita.Entities.EntitySessionExtensions.GetChildEntities``2(Vita.Entities.IEntitySession,``0,System.String)">
+            <summary>Retrieves a list of child entities for a given parent entity.</summary>
+            <typeparam name="TParentEntity">Parent entity type, the type of a reference property of the child entity. </typeparam>
+            <typeparam name="TEntity">Child entity type.</typeparam>
+            <param name="session">Entity session.</param>
+            <param name="parent">Parent entity.</param>
+            <param name="parentRefProperty">Optional. The name of the property of child entity that references the parent entity. Use it when
+            there is more than one such property.</param>
+            <returns>A list of child entities that reference the parent entity.</returns>
+        </member>
+        <member name="T:Vita.Entities.SearchParams">
+            <summary>
+            Base class for search parameters containers. Use derived class as a parameter for ApiController method, with [FromUri] attribute.
+            </summary>
+            <remarks>Important: User properties in derived class, not fields. Fields do not work with for parameters in Web Api controller method.</remarks>
+        </member>
+        <member name="P:Vita.Entities.SearchParams.OrderBy">
+            <summary>List of columns with optional 'desc' spec. </summary>
+            <remarks>Use comma or semicolon to separate properties; use dash (-) or colon to add 'desc' flag (dash is more URL-friendly).
+            You can also map simple names to more complex names (or dotted property chains), by providing 
+            mapping dictionary to SearchHelper.CreateSearch method. </remarks>
+            <example>
+              firstname-desc;lastname;birthdate-desc
+            </example>
+        </member>
+        <member name="M:Vita.Entities.ValidationExtensions.ThrowIfNull(Vita.Entities.IEntitySession,System.Object,System.String,System.String,System.String,System.Object[])">
+            <summary>Throws ClientFault immediately if value is null. </summary>
+            <param name="session">Entity session.</param>
+            <param name="value">Value to check for null.</param>
+            <param name="faultCode">Fault code. Use values defined in ClientFaultCodes class, or custom value.</param>
+            <param name="valueName">Value name, property name of value at fault.</param>
+            <param name="message">Fault message template.</param>
+            <param name="args">Formatting args for fault message template.</param>
+        </member>
+        <member name="T:Vita.Entities.Sizes">
+            <summary>A container for standard string size values for use in the <c>Size</c> attribute.</summary>
+        </member>
+        <member name="T:Vita.Entities.Services.ITimeService">
+            <summary> Provides Time data for application. Allows shifting current time for testing purposes. </summary>
+            <remarks> <para>All code in VITA framework requests current time through a globally available time service, not from <c>DateTime.Now</c> directly.
+            The goal is to allow easy unit testing of time-sensitive functionality. The test code can easily shift current time to test any functionality 
+            involving current time. </para>
+            Additionally time service provides a millisecond-resolution tick counter based on StopWatch; this counter may be used to 
+            measure execution time of operations. Note that absolute value of EllapsedMilliseconds property is meaningless, only differences matter. 
+            </remarks>
+        </member>
+        <member name="T:Vita.Entities.Services.Implementations.TraceErrorLogService">
+            <summary>Default implementation of error log service - saves errors to Trace and Windows Event Log. </summary>
+        </member>
+        <member name="T:Vita.Entities.QueryOptions">
+            <summary>Defines options for an entity query. Use <c>WithOptions</c> extension method to set the options on a query. </summary>
+            <remarks>Not all options are implemented.</remarks>
+        </member>
+        <member name="M:Vita.Entities.EntityQueryExtensions.WithOptions``1(System.Linq.IQueryable{``0},Vita.Entities.QueryOptions)">
+            <summary>Sets the options for a query. </summary>
+            <typeparam name="TEntity">Entity type.</typeparam>
+            <param name="query">Query</param>
+            <param name="options">The options to set.</param>
+            <returns>The original query with options set.</returns>
+            <remarks>
+            Use NoQueryCache option for search queries produced from custom search forms to prevent polluting the query cache with custom one-shot queries.
+            Use NoLock option for adhoc queries against large transactional tables to avoid blocking access for concurrent update statements. 
+            </remarks>
+        </member>
+        <member name="T:Vita.Entities.Runtime.ObservableEntityList`1">
+            <summary>Observable entity list class. Implements <c>INotifyCollectionChanged</c> interface. </summary>
+            <typeparam name="TEntity">Entity type.</typeparam>
+            <remarks>All entity lists returned by the system are instances of ObservableEntityList</remarks>
+        </member>
+        <member name="T:Vita.Entities.Authorization.IEntityAccess">
+            <summary>An interface exposing access rights for an entity. Use <c>EntityHelper</c></summary>
+        </member>
+        <member name="M:Vita.Entities.Runtime.EntityRecord.ToString">
+            <summary>Returns a display string for an entity. The display string is produced by a custom method specified in [Display] attribute.</summary>
+        </member>
+        <member name="P:Vita.Common.Util.PreciseTicks">
+            <summary>
+            Gets precise time intervals in milliseconds 
+            </summary>
+        </member>
+        <member name="T:Vita.Entities.Authorization.AccessType">
+            <summary>A flag set representing granular access type (read, write, etc.) for an entity.</summary>
+        </member>
+        <member name="F:Vita.Entities.Authorization.AccessType.None">
+            <summary>Empty flag set.</summary>
+        </member>
+        <member name="F:Vita.Entities.Authorization.AccessType.Peek">
+            <summary>Restricted read access. Can read internally in code, but user may not see the value. </summary>
+        </member>
+        <member name="F:Vita.Entities.Authorization.AccessType.ReadStrict">
+            <summary>Can read values and show it to the user in UI.</summary>
+        </member>
+        <member name="F:Vita.Entities.Authorization.AccessType.CreateStrict">
+            <summary>Can create new entities.</summary>
+        </member>
+        <member name="F:Vita.Entities.Authorization.AccessType.UpdateStrict">
+            <summary>Can update an entity or entities.</summary>
+        </member>
+        <member name="F:Vita.Entities.Authorization.AccessType.DeleteStrict">
+            <summary>Can delete an entity or entities.</summary>
+        </member>
+        <member name="F:Vita.Entities.Authorization.AccessType.Read">
+            <summary>Can read values and show it to the user in UI. Combination of ReadStrict and Peek access.</summary>
+        </member>
+        <member name="F:Vita.Entities.Authorization.AccessType.Create">
+            <summary>Can create new and read existing entities.</summary>
+        </member>
+        <member name="F:Vita.Entities.Authorization.AccessType.Update">
+            <summary>Can view and update an entity or entities.</summary>
+        </member>
+        <member name="F:Vita.Entities.Authorization.AccessType.Delete">
+            <summary>Can view and delete an entity or entities.</summary>
+        </member>
+        <member name="F:Vita.Entities.Authorization.AccessType.CRUD">
+            <summary>Full CRUD access - a combination of Create, Read, Update, Delete actions.</summary>
+        </member>
+        <member name="T:Vita.Entities.Authorization.EntityAccessRights">
+            <summary> A container for detailed access rights information for an entity (instance or type-level) for a given user. </summary>
+        </member>
+        <member name="T:Vita.Entities.ReadAccessLevel">
+            <summary>
+            Defines the values for <c>ISecureSession.RequireAccessLevel</c> property. This property determines what permission level
+            (Read or Peek) the current user must have for read operations on entities to succeed. 
+            </summary>
+        </member>
+        <member name="F:Vita.Entities.ReadAccessLevel.Peek">
+            <summary> Require Peek permission - use it when property values are not intended to be shown to the user directly. 
+            Use it for entities/properties that are used by application code internally. </summary>
+        </member>
+        <member name="F:Vita.Entities.ReadAccessLevel.Read">
+            <summary> Require Read permission - use it when property values are intended to be shown to the current user. </summary>
+        </member>
+        <member name="T:Vita.Entities.DenyReadActionType">
+            <summary> Defines behavior of the secure entity session for the case when access to the data is denied. </summary>
+        </member>
+        <member name="F:Vita.Entities.DenyReadActionType.Throw">
+            <summary>The system should throw <c>AuthorizationException</c> when user does not have enough permission to access the requested data.</summary>
+        </member>
+        <member name="F:Vita.Entities.DenyReadActionType.Filter">
+            <summary>Specifies that the system should silently return the type default (null, zero) value for properties, 
+            null value for a single entity and filtered list for entity lists when access is denied. </summary>
+        </member>
+        <member name="T:Vita.Entities.ISecureSession">
+            <summary>Defines a secure session with enabled entity access authorization. </summary>
+            <remarks>Use <c>IAuthorizationService.OpenSecureSession</c> method to open secure sessions. </remarks>
+        </member>
+        <member name="T:Vita.Entities.IEntitySession">
+            <summary>Represents a session - a virtual connection channel to the database used for reading/writing entities.</summary>
+            <remarks>Keeps track of loaded and modified entitites.</remarks>
+        </member>
+        <member name="M:Vita.Entities.IEntitySession.NewEntity``1">
+            <summary>Creates a new entity.</summary>
+            <typeparam name="TEntity">Entity type.</typeparam>
+            <returns>An entity instance.</returns>
+            <remarks>The entity is created in memory only. It will be submitted to the database when application calls the <c>SaveChanges</c>  method.</remarks>
+        </member>
+        <member name="M:Vita.Entities.IEntitySession.GetEntity``1(System.Object,Vita.Entities.LoadFlags)">
+            <summary>
+            Retrieves entity by type and primary key value.
+            </summary>
+            <typeparam name="TEntity">Entity type.</typeparam>
+            <param name="primaryKeyValue">The value of the primary key.</param>
+            <param name="flags">Load flags.</param>
+            <returns>An entity instance.</returns>
+            <remarks>For composite primary keys pass an instance of primary key
+            created using the <c>EntityExtensions.CreatePrimaryKey</c> extension method. 
+            </remarks>
+        </member>
+        <member name="M:Vita.Entities.IEntitySession.GetEntities``1(System.Int32,System.Int32)">
+            <summary>Returns a list of entities.</summary>
+            <typeparam name="TEntity">Entity type.</typeparam>
+            <param name="skip">Optional. A number of entities to skip.</param>
+            <param name="take">Maximum number of entities to include in results.</param>
+            <returns>A list of entities.</returns>
+            <remarks>
+            <para>The entities are order according to [OrderBy] attribute in entity interface definition, if specified. Otherwise, the order 
+            is by clustered index, or primary key (if clustered indexes are not explicitly supported by database).
+            </para>
+            <para>You must provide values for <paramref name="skip"/> and <paramref name="take"/>, unless the entity is marked with
+            [SmallTable] attribute. This is a preventive measure against accidentally querying too much data. For querying big tables with many rows
+            use custom LINQ queries against entity sets returned by <c>EntitySet()</c> method.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Vita.Entities.IEntitySession.DeleteEntity``1(``0)">
+            <summary>Marks entity for deletion.</summary>
+            <typeparam name="TEntity">Entity type.</typeparam>
+            <param name="entity">The entity to delete.</param>
+            <remarks>The deletion of database record will happen when the application calls the <c>SaveChanges</c> method.</remarks>
+        </member>
+        <member name="M:Vita.Entities.IEntitySession.CanDeleteEntity``1(``0,System.Type[]@)">
+            <summary>Checks if entity instance can be deleted without violating referential constraints in the database.</summary>
+            <typeparam name="TEntity">Entity type.</typeparam>
+            <param name="entity">The entity to check.</param>
+            <param name="blockingEntities">The list of entity types for which there are instances (records) in the database that reference 
+            the entity being checked, thus preventing the entity from being deleted. Set to null if the function returns true.</param>
+            <returns>True if there are not external references to the entity, so it can be deleted. Otherwise, false.</returns>
+            <remarks>The function ignores the referencing entities if the reference (property) is marked with [CascadeDelete] attribute, meaning 
+            that these referencing records would be automatically deleted whenever the parent is deleted.
+            </remarks>
+        </member>
+        <member name="M:Vita.Entities.IEntitySession.ValidateChanges">
+            <summary>
+            Validates the changes in all entities tracked by the session that are subject for the next update (<c>SaveChanges</c> call). 
+            </summary>
+            <remarks>Throws a <c>ValidationException</c> if one or more validation errors are encountered.</remarks>
+        </member>
+        <member name="M:Vita.Entities.IEntitySession.CancelChanges">
+            <summary>Reverts all changes in entities tracked by the current session.</summary>
+        </member>
+        <member name="M:Vita.Entities.IEntitySession.SaveChanges">
+            <summary> Save the changes for all tracked entities in the database. </summary>
+            <remarks> Validates changes using then <c>ValidateChanges</c> method before starting the database operation. Automatically orders 
+            update commands to satisfy the referential integrity rules.
+            </remarks>
+        </member>
+        <member name="M:Vita.Entities.IEntitySession.EntitySet``1">
+            <summary>Returns a queryable set for use in LINQ queries. </summary>
+            <typeparam name="TEntity">Entity type.</typeparam>
+            <returns>A queryable set.</returns>
+            <remarks>Use this command to retrieve the primary queryable sets for use in custom LINQ queries.</remarks>    
+        </member>
+        <member name="P:Vita.Entities.IEntitySession.Context">
+            <summary>Returns the context associated with the current user. </summary>
+        </member>
+        <member name="M:Vita.Entities.ISecureSession.IsAccessAllowed``1(Vita.Entities.Authorization.AccessType)">
+            <summary>Returns a boolean indicating whether action type(s) are allowed for a given entity type, for at least one instance.</summary>
+            <typeparam name="TEntity">The entity type.</typeparam>
+            <param name="accessType">A flag set representing a set of actions.</param>
+            <returns>True if action is allowed; otherwise, false.</returns>
+        </member>
+        <member name="P:Vita.Entities.ISecureSession.DemandReadAccessLevel">
+            <summary> Gets or sets the required read access level for read operations. </summary>
+        </member>
+        <member name="P:Vita.Entities.ISecureSession.DenyReadAction">
+            <summary>Gets or sets the action type for denied access.</summary>
+        </member>
+        <member name="T:Vita.Entities.Authorization.Activity">
+            <summary>Represents a set of permissions logically combined to allow performing a set of operations over data documents. </summary>
+        </member>
+        <member name="T:Vita.Entities.Authorization.ActivityGrant">
+            <summary>Represents a grant (enablement) of an activity, as part of a Role, with optional data filter for documents.</summary>
+        </member>
+        <member name="T:Vita.Entities.Authorization.DynamicActivityGrant">
+            <summary> An activity grant enabled dynamically from business code for a certain period of time/execution path.</summary>
+            <remarks>Dynamic activity grants allow enabling certain operations only in specific contexts (parts) of the application. </remarks>
+        </member>
+        <member name="T:Vita.Entities.Model.IContextValueReader">
+            <summary> Provides a way to read a value from User context. Used in authorization data filters.</summary>
+        </member>
+        <member name="T:Vita.Entities.Model.ContextValueReader">
+            <summary>Simple implementation of IContextValueReader - reads value from UserContext.Values under a fixed key. </summary>
+        </member>
+        <member name="T:Vita.Entities.Model.DataFilter">
+            <summary> Data filter detects if a given entity "belongs" to a data group identified by a value in OperationContext. </summary>
+            <remarks>For example, we can create a data filter that indicates if a certain record (document) is related to the department
+            that user/employee works in. Based on this information, the authorization system might grant or deny access to the document.
+            In this scenario, the Id of the department is placed into the user context. The context value reader is setup to return this value
+            to the data filter. The data filter is configured to return true/false indicator for a given entity (record) instance, 
+            using expressions that retrieve the associated department ID from an entity and match it with the ID in the user context.
+            See an example of using the data filters in BooksModel sample assembly.
+            </remarks>
+        </member>
+        <member name="T:Vita.Entities.Model.DataFilter`1">
+            <summary> Data filter detects if a given entity "belongs" to a data group identified by a value in UserContext. </summary>
+            <remarks>For example, we can create a data filter that indicates if a certain record (document) is related to the department
+            that user/employee works in. Based on this information, the authorization system might grant or deny access to the document.
+            In this scenario, the Id of the department is placed into the user context. The context value reader is setup to return this value
+            to the data filter. The data filter is configured to return true/false indicator for a given entity (record) instance, 
+            using expressions that retrieve the associated department ID from an entity and match it with the ID in the user context.
+            See an example of using the data filters in BooksModel sample assembly.
+            </remarks>
+        </member>
+        <member name="T:Vita.Entities.Authorization.EntityGroupPermission">
+            <summary>A permission set for an entity group. Identifies resources (entities) and allowed actions. </summary>
+        </member>
+        <member name="T:Vita.Entities.Authorization.Permission">
+            <summary>An abstract permission class. May be used as a base class for defining custom permission classes implementing custom authorization logic. </summary>
+        </member>
+        <member name="T:Vita.Entities.Authorization.EntityGroupResource">
+            <summary> An authorization resource consisting of a group of entities. </summary>
+            <remarks>Resources are combined with actions to form permissions.</remarks> 
+        </member>
+        <member name="T:Vita.Entities.Authorization.EntityResource">
+            <summary>A resource representing an entity and optionally a subset of entity properties that are subject to authorization check under this resource.</summary>
+        </member>
+        <member name="F:Vita.Entities.Authorization.EntityResource.Properties">
+            <summary>Comma-delimited list of prop groups or properties identifying properties included in the resource.</summary>
+        </member>
+        <member name="T:Vita.Entities.Authorization.Role">
+            <summary> A container for combined permission sets assembled to match some organizational role. </summary>
+        </member>
+        <member name="T:Vita.Entities.Authorization.Authority">
+            <summary> A container for the runtime permission set for a user with a given role set. </summary>
+            <remarks>Authority instances are created dynamically at runtime for authenticated users and are shared between users with the same roles.
+            AuthorizationService holds a dynamic cache of authority instances. 
+            </remarks>
+        </member>
+        <member name="T:Vita.Entities.Runtime.EntitySession">
+            <summary> Represents a live connection to the database with tracking of loaded and changed/added/deleted entities. </summary>
+            <remarks>This class provides methods for data access: reading, updating, deleting entitites. </remarks>
+        </member>
+        <member name="T:Vita.Entities.PersistOrderInAttribute">
+            <summary>
+            Specifies that the order of elements in the list is explicit and should be maintained automatically
+            using the designated property in the link entity (many-to-many) or in the target entity (one-to-many).
+            </summary>
+            <remarks>The target entity or link entity must have OrderBy attribute specifying the target "ordering" property.
+            </remarks>
+        </member>
+        <member name="T:Vita.Entities.OrderByAttribute">
+            <summary> Specifies the default sort order for an entity list when multiple entities are loaded from database.</summary>
+            <remarks>
+            Use this attribute to specify the sort order of entity lists. Provide a list of property names
+            delimited by comma, with optional direction specifier (ASC/DESC), like "LastName:ASC,FirstName:DESC".
+            If specifier is missing, ASC is assumed. The attribute can be used on entities only.
+            In the future, I hope to add support for it on entity list properties.
+            </remarks>
+        </member>
+        <member name="T:Vita.Entities.OldNamesAttribute">
+            <summary> Specifies the old name(s) for a column or table. </summary>
+            <remarks>
+            Use this attribute when renaming an entity or property to specify the old name for table or column. 
+            System needs the old name to match the existing database object with new entity or property, to rename 
+            the database object. Renaming might happen more than once, so you can specify more than one name delimited by comma.
+            The attribute may stay for a while, after renaming happened and propagated to all machines - if an object 
+            (property or table) matches existing object in database, this attribute has no effect. 
+            </remarks>
+        </member>
+        <member name="T:Vita.Entities.PropertyGroupAttribute">
+            <summary>Defines a property group.</summary>
+        </member>
+        <member name="T:Vita.Entities.GroupsAttribute">
+            <summary>Specifies property group(s) for a property </summary>
+        </member>
+        <member name="T:Vita.Entities.NoUpdateAttribute">
+            <summary>Specifies that entity property may not be updated after entity is inserted into database table.</summary>
+        </member>
+        <member name="T:Vita.Entities.NoInsertUpdateAttribute">
+            <summary>Specifies that entity property may not be inserted or updated.</summary>
+        </member>
+        <member name="T:Vita.Entities.DateOnlyAttribute">
+            <summary> Specifies that property contains date-only part.</summary>
+            <remarks>Allowed on DateTime members only.</remarks>
+        </member>
+        <member name="T:Vita.Entities.UtcAttribute">
+            <summary> Specifies that property contains UTC datetime.</summary>
+            <remarks>Allowed on DateTime members only. When application assigns a datetime value to a property marked with [Utc] attribute, the system 
+            automatically checks the Kind property of the DateTime value. If it is set to Local, then system converts the value to Utc. 
+            So you do not have to worry about the proper kind of DateTime value that you assign to Utc property - the system adjusts automatically.
+            The value returned is always Utc datetime. </remarks>
+        </member>
+        <member name="T:Vita.Entities.UnlimitedAttribute">
+            <summary>Marks a string or binary property as unlimited size column (nvarchar(max) in SQL Server). </summary>
+        </member>
+        <member name="T:Vita.Entities.CurrencyAttribute">
+            <summary>Marks a decimal property as Money column. </summary>
+        </member>
+        <member name="T:Vita.Entities.ComputedAttribute">
+            <summary> Marks property as computable from other properties. </summary>
+            <remarks>Must refer to a static function accepting a single parameter of the "entity" type. 
+            For example: 
+            <code>
+              public static string GetFullName(IPerson person) { 
+                return person.FirstName + " " + person.LastName; 
+              }
+            </code>
+            c# does not allow specifying method references as attribute parameters. As a workaround, we 
+            denote method using (Type, Method name) pair.
+            </remarks>
+        </member>
+        <member name="T:Vita.Entities.DependsOnAttribute">
+            <summary>
+            Specifies list of members that this member depends on. Might be used with Computed attribute to automatically raise 
+            property changed event for computed property when any of the properties used in its computatation change.  
+            </summary>
+        </member>
+        <member name="T:Vita.Entities.ValidateAttribute">
+            <summary> Specifies validation method for an entity. 
+            </summary>
+            <remarks>
+            <para> The method must have a signature based on generic delegate ValidateMethod: </para>
+            <code>
+              public delegate void ValidateMethod&lt;TEntity&gt;(EntityValidator validator, TEntity entity);
+            </code>
+            <para>
+            The method is invoked after the system-provided default validation. 
+            Note: c# does not allow specifying method references as attribute parameters. As a workaround, we 
+            denote method using (Type, Method name) pair.
+            </para>
+            </remarks>
+        </member>
+        <member name="T:Vita.Entities.PagedAttribute">
+            <summary>Specifies that queries returning entity lists must be paged in the database.</summary>
+        </member>
+        <member name="T:Vita.Entities.AutoAttribute">
+            <summary> Identifies automatically generated value for new records. </summary>
+        </member>
+        <member name="T:Vita.Entities.HashForAttribute">
+            <summary>Signals that int property contains hash value for other property.</summary>
+        </member>
+        <member name="T:Vita.Entities.OwnerAttribute">
+            <summary>
+            CURRENTLY NOT USED, RESERVED FOR THE FUTURE.
+            Used on properties referencing other entities. Identifies that the referenced entity is the "owner" of this entity.
+            <remarks>
+              Used in the following situations 
+              Authorization - in record-level authorization, the user's relation to the owner entity is propagated to "this" entity.
+              Locking - whenever we need to lock this entity for editing, we lock the owner entity instead
+              Change tracking - if the owner is change-tracked (has "UpdatedOn" column), it is automatically updated when this entity is updated
+              (maybe?) Deleting owner - when owner is deleted, this entity is deleted automatically. 
+            </remarks>
+            </summary>
+        </member>
+        <member name="T:Vita.Entities.SecretAttribute">
+            <summary>
+            Identifies a property as a "secret" - it can never be read, only written. It is excluded from output lists in all
+            SELECT statements, but still can be used in WHERE clauses. 
+            </summary>
+            <remarks>Use if for passwords and other write-once type of values. </remarks>
+        </member>
+        <member name="T:Vita.Entities.IndexAttribute">
+            <summary>
+            Specifies a non-unique index on a database table. 
+            Can be placed on a property (without parameters), or on an entity with a list of column names as parameter.
+            </summary>
+        </member>
+        <member name="T:Vita.Entities.DynamicAttribute">
+            <summary>
+            Identifies an entity as dynamic - instances are created on the fly and should be discarded from session after transaction commits or aborts.
+            </summary>
+            <remarks>Example: transaction log records. The records are generated on-the-fly when updates are submitted and should be discarded if transaction aborts. 
+            If transaction is aborted and application submits the update again, a new record(s) will be generated. 
+            </remarks>
+        </member>
+        <member name="T:Vita.Entities.DisplayAttribute">
+            <summary>Provides a default display format or method for an entity. </summary>
+            <remarks>
+            You can provide a Format string with embedded property names enclosed in braces, for ex: "{Title}").
+            Alternatively you can use a custom formatting method - in this case you must
+            provide the name and container class and method name pointing to a static method with signature like
+            <code>
+             public static string DisplayBook(IBook book)' {..}
+            </code>
+            <para>
+            Examples: [Display("{Title}")]  
+                      [Display("{LastName}, {FirstName}")]
+                      [Display(typeof(BookExtensions), "DisplayBook")] 
+            </para>
+            </remarks>
+        </member>
+        <member name="T:Vita.Entities.CascadeDeleteAttribute">
+            <summary>For a property that is a reference to another entity, sets "ON DELETE CASCADE" option on corresponding constraint in database.</summary>
+        </member>
+        <member name="T:Vita.Entities.AsIsAttribute">
+            <summary>Marks a property that the framework should not try to update.</summary>
+        </member>
+        <member name="T:Vita.Entities.EntityHelper">
+            <summary>A static utility class for manipulating entities. </summary>
+        </member>
+        <member name="M:Vita.Entities.EntityHelper.GetSession(System.Object)">
+            <summary>Returns an entity session that entity is linked to.</summary>
+            <param name="entity">The entity instance.</param>
+            <returns>The entity session.</returns>
+        </member>
+        <member name="M:Vita.Entities.EntityHelper.GetSession``1(System.Linq.IQueryable{``0})">
+            <summary>Returns an entity session that the query is linked to.</summary>
+            <typeparam name="TEntity">Entity type.</typeparam>
+            <param name="dynamicQuery">An entity query.</param>
+            <returns>The entity session.</returns>
+        </member>
+        <member name="M:Vita.Entities.EntityHelper.GetRecord(System.Object)">
+            <summary>Returns an underlying <c>EntityRecord</c> object for an entity. </summary>
+            <param name="entity">An entity instance.</param>
+            <returns>The entity record.</returns>
+        </member>
+        <member name="M:Vita.Entities.EntityHelper.GetEntityType(System.Object)">
+            <summary>Returns the entity type (interface type) for an entity instance. </summary>
+            <param name="entity">An entity instance.</param>
+            <returns>The interface type for an entity.</returns>
+            <remarks>Note that entity.GetType() returns an underlying class type (IL-generated at runtime), not entity interface type.</remarks>
+        </member>
+        <member name="M:Vita.Entities.EntityHelper.GetProperty(System.Object,System.String)">
+            <summary>Returns a value of the entity property.</summary>
+            <param name="entity">The entity instance.</param>
+            <param name="propertyName">The property name.</param>
+            <returns>The value of the property.</returns>
+        </member>
+        <member name="M:Vita.Entities.EntityHelper.GetProperty``1(System.Object,System.String)">
+            <summary>Returns a strongly-typed value of the entity property.</summary>
+            <typeparam name="T">The result type.</typeparam>
+            <param name="entity">The entity instance.</param>
+            <param name="propertyName">The property name.</param>
+            <returns>The value of the property.</returns>
+        </member>
+        <member name="M:Vita.Entities.EntityHelper.SetProperty(System.Object,System.String,System.Object)">
+            <summary>Sets a property value of an entity. </summary>
+            <param name="entity">The entity instance.</param>
+            <param name="propertyName">The property name.</param>
+            <param name="value">The property value.</param>
+        </member>
+        <member name="M:Vita.Entities.EntityHelper.GetEntityAccess``1(``0)">
+            <summary>Returns an instance of the <c>IEntityAccess</c> interface. This object may be used to retrieve the detailed information about authorization permissions 
+            for the entity and the current user. </summary>
+            <param name="entity">The entity instance.</param>
+            <returns>The access info object.</returns>
+        </member>
+        <member name="M:Vita.Entities.EntityHelper.EnsureLoaded``1(``0,System.Linq.Expressions.Expression{System.Func{``0,System.Object}})">
+            <summary>Checks if specified properties of the entity are loaded from the database. Reloads the entity if necessary.</summary>
+            <typeparam name="TEntity">The entity type.</typeparam>
+            <param name="entity">The entity instance.</param>
+            <param name="propertySelector">An expression identifying the properties to check.</param>
+            <example>
+             EntityHelper.EnsureLoaded(book, b => b.Authors); 
+             EntityHelper.EnsureLoaded(book, b => new {b.Authors, b.Publisher}); 
+            </example>
+        </member>
+        <member name="T:Vita.Entities.UniqueClusteredIndexAttribute">
+            <summary> Specifies a unique clustered index on a database table. Can be placed on a property (without parameters), 
+            or on an entity with a list of column names as parameter. </summary>
+        </member>
+        <member name="M:Vita.Entities.UniqueClusteredIndexAttribute.#ctor">
+            <summary> Parameterless constructor, for use on property.</summary>
+        </member>
+        <member name="M:Vita.Entities.UniqueClusteredIndexAttribute.#ctor(System.String)">
+            <summary>For use on Entity. </summary>
+            <param name="propertyOrColumnNames">Comma-delimited list of property or column names.</param>
+        </member>
+        <member name="T:Vita.Entities.ClusteredIndexAttribute">
+            <summary> Specifies a clustered index on a database table. Can be placed on a property (without parameters), 
+            or on an entity with a list of column names as parameter. </summary>
+        </member>
+        <member name="M:Vita.Entities.ClusteredIndexAttribute.#ctor">
+            <summary> Parameterless constructor, for use on property.</summary>
+        </member>
+        <member name="M:Vita.Entities.ClusteredIndexAttribute.#ctor(System.String)">
+            <summary>For use on Entity. </summary>
+            <param name="propertyOrColumnNames">Comma-delimited list of property or column names.</param>
+        </member>
+        <member name="T:Vita.Entities.UniqueAttribute">
+            <summary>Specifies a unique index on a database table. May be placed on a property (without parameters), 
+            or on an entity with a list of column names as parameter.</summary>
+        </member>
+        <member name="T:Vita.Entities.AutoType">
+            <summary>Defines types of automatic values in entity properties/columns. Used by <c>Auto</c> attribute. </summary>
+        </member>
+        <member name="F:Vita.Entities.AutoType.None">
+            <summary>No automatic value. Used internally. </summary>
+        </member>
+        <member name="F:Vita.Entities.AutoType.NewGuid">
+            <summary>New GUID is assigned to the property when new entity is created.</summary>
+        </member>
+        <member name="F:Vita.Entities.AutoType.CreatedOn">
+            <summary>For new entities the property is set to the current datetime value.</summary>
+        </member>
+        <member name="F:Vita.Entities.AutoType.UpdatedOn">
+            <summary>When an entity is created or updated, the property is set to the current datetime value.</summary>
+        </member>
+        <member name="F:Vita.Entities.AutoType.CreatedBy">
+            <summary>For new entities the property is set to the name of the current user (from session.UserContext.UserName field).</summary>
+        </member>
+        <member name="F:Vita.Entities.AutoType.UpdatedBy">
+            <summary>When an entity is created or updated, the property value is set to the name of the current user 
+            (from session.UserContext.UserName field).</summary>
+        </member>
+        <member name="F:Vita.Entities.AutoType.CreatedById">
+            <summary>For new entities the property is set to the Id of the current user (from session.UserContext.UserId field).</summary>
+        </member>
+        <member name="F:Vita.Entities.AutoType.UpdatedById">
+            <summary>When an entity is created or updated, the property value is set to the Id of the current user 
+            (from session.UserContext.UserId field).</summary>
+        </member>
+        <member name="F:Vita.Entities.AutoType.Identity">
+            <summary>The property holds an identity value generated in the database. </summary>
+        </member>
+        <member name="F:Vita.Entities.AutoType.RowVersion">
+            <summary>The property holds an row version (timestamp) value. The value is automatically incremented when entity is updated.</summary>
+        </member>
+        <member name="T:Vita.Entities.IdentityAttribute">
+            <summary> Marks identity column in the database.</summary>
+            <remarks>Allowed on integer-type members only.</remarks>
+        </member>
+        <member name="T:Vita.Entities.RowVersionAttribute">
+            <summary> Marks RowVersion (timestamp) column in the database.</summary>
+            <remarks>The property must be of type ulong (UInt64).</remarks>
+        </member>
+        <member name="T:Vita.Entities.SizeOptions">
+            <summary>
+            Defines options for the <c>SizeAttribute</c>.
+            </summary>
+        </member>
+        <member name="F:Vita.Entities.SizeOptions.None">
+            <summary>No options.</summary>
+        </member>
+        <member name="F:Vita.Entities.SizeOptions.AutoTrim">
+            <summary>Use it with columns holding log/system-generated messages, when it's hard to control/predict the message size, 
+            but information is critical and we should not reject it, rather trim instead.</summary>
+        </member>
+        <member name="T:Vita.Entities.LoadFlags">
+            <summary> Specifies entity load options for <c>IEntitySession.GetEntity</c> method. </summary>
+        </member>
+        <member name="F:Vita.Entities.LoadFlags.None">
+            <summary> Return already loaded entity; return null if record is not loaded.</summary>
+        </member>
+        <member name="F:Vita.Entities.LoadFlags.Load">
+            <summary>Load entity from the data store if it is not loaded; does not reload already loaded entity.</summary>
+        </member>
+        <member name="F:Vita.Entities.LoadFlags.Stub">
+            <summary>Create a stub if entity is not loaded. A stub is a skeleton entity with only primary key value(s) assigned. 
+            Other entity properties will be loaded lazily, when application tries to read them.
+            </summary>
+        </member>
+        <member name="F:Vita.Entities.LoadFlags.Default">
+            <summary> Default value: Load. </summary>
+        </member>
+        <member name="T:Vita.Entities.EntityArea">
+            <summary><c>EntityArea</c> represents a database schema object, like 'dbo'. </summary>
+        </member>
+        <member name="F:Vita.Entities.EntityArea.App">
+            <summary>Entity app reference.</summary>
+        </member>
+        <member name="F:Vita.Entities.EntityArea.Name">
+            <summary>Gets area name, usually the same as <c>SchemaName</c>. </summary>
+        </member>
+        <member name="F:Vita.Entities.EntityArea.SchemaName">
+            <summary>Gets database schema corresponding to this area.</summary>
+        </member>
+        <member name="F:Vita.Entities.EntityArea.Description">
+            <summary>Gets optional schema description.</summary>
+        </member>
+        <member name="F:Vita.Entities.EntityArea.Entities">
+            <summary>Gets the list of entity types registered</summary>
+        </member>
+        <member name="M:Vita.Entities.EntityArea.RegisterEntities(System.Type[])">
+            <summary>Registers entity type(s) with the entity model in the area/schema. </summary>
+            <param name="entities">An array of entity types.</param>
+        </member>
+        <member name="M:Vita.Entities.EntityArea.RegisterCompanionTypes(System.Type[])">
+            <summary> Registers companion types. </summary>
+            <param name="companionTypes">Companion types for registered entities.</param>
+            <remarks>Companion types are used as an alternative place to put attributes for entities. 
+            Any attribute you put on an entity (or its property) you can alternatively put on a companion type (or its property). 
+            This facility might be useful for separation of concerns. For example, you can place all database
+            index attribute on companion types that are located in a separate file that is maintaned by a 
+            developer with appropriate database management skills. 
+            </remarks>
+        </member>
+        <member name="M:Vita.Entities.EntityArea.ToString">
+            <summary>Returns string representation of the object. </summary>
+            <returns>String representing the object.</returns>
+        </member>
+        <member name="M:Vita.Entities.EntityArea.GetHashCode">
+            <summary>Returns the hash code of the object. </summary>
+            <returns>Hash code.</returns>
+        </member>
+        <member name="T:Vita.Entities.EntityModule">
+            <summary>Entity module represents a set of related entities and associated code comprising a unit of functionality.</summary>
+            <remarks>Modules are primary units of component-based architecture for database applications. 
+            Modules can be independently developed, tested and then used in multiple applications, just like Windows UI controls 
+            in WebForms framework.</remarks>
+        </member>
+        <member name="F:Vita.Entities.EntityModule.App">
+            <summary>Entity app reference.</summary>
+        </member>
+        <member name="F:Vita.Entities.EntityModule.Name">
+            <summary>Gets module name.</summary>
+        </member>
+        <member name="F:Vita.Entities.EntityModule.Description">
+            <summary>Gets optional module description.</summary>
+        </member>
+        <member name="F:Vita.Entities.EntityModule.Area">
+            <summary>Primary entity area that hosts all module entities.</summary>
+        </member>
+        <member name="M:Vita.Entities.EntityModule.#ctor(Vita.Entities.EntityArea,System.String,System.String)">
+            <summary>Constructs a new instance of the <c>EntityModule</c> class. </summary>
+            <param name="area">Primary entity area to register module entities.</param>
+            <param name="name">Module name.</param>
+            <param name="description">Optional. Module description.</param>
+        </member>
+        <member name="M:Vita.Entities.EntityModule.Requires``1">
+            <summary>Adds a dependency on an external module. </summary>
+            <typeparam name="TModule">Dependency module type.</typeparam>
+            <remarks><para>Use this method in module constructor to explicitly list other modules that this module depends on
+            and which must be therefore included in the entity application. This is the case when entities in this 
+            module reference entities in other modules. The system will check the dependencies at application startup and 
+            if anything is missing it will throw an error with helpful message to the app developer that additional 
+            modules should be included into the entity app.</para>
+            <para>Example: Login module entities reference IEncryptedData entity
+            for storing information in encrypted form, so LoginModule explicitly requires EncryptedDataModule.</para>
+            </remarks>
+        </member>
+        <member name="M:Vita.Entities.EntityModule.GetDependencies">
+            <summary>Returns a list of module dependencies. </summary>
+            <returns>An enumerable stream of module types that this module depends on.</returns>
+        </member>
+        <member name="M:Vita.Entities.EntityModule.Init">
+            <summary>Called by the system notifying that the entity app is being initialized. 
+            All services are registered by this moment, so module code can retrieve the services it uses
+            and perform required initialization.</summary>
+        </member>
+        <member name="M:Vita.Entities.EntityModule.AppInitComplete">
+            <summary>Notifies the module that entity app initialization is completed. </summary>
+        </member>
+        <member name="M:Vita.Entities.EntityModule.Shutdown">
+            <summary>Notifies the module that entity app is being shut down. </summary>
+        </member>
+        <member name="M:Vita.Entities.EntityModule.RegisterSize(System.String,System.Int32)">
+            <summary>Registers the size for string and binary columns for the size code that should be applied for entities in the module. 
+            </summary>
+            <param name="sizeCode">The size code.</param>
+            <param name="size">The size value.</param>
+            <remarks>Most often size codes are registered at entity app level, and applied to all entities in all modules.
+            However, if you need to set specific size values for codes used in some module, you can use this method to set these 
+            values when you setup the application. The method uses module's namespace as a prefix in full size code that is registered 
+            in the app-wide Sizes table. The Size attribute code looks up the size value first using the full size code (with namespace),
+            then by size code alone. The implicit assumption is that entity interfaces are declared in the same namespace 
+            as the containing module.</remarks>
+        </member>
+        <member name="T:Vita.Entities.EntityAppStatus">
+            <summary> Represents entity application status, from initialization to shutdown. </summary>
+        </member>
+        <member name="F:Vita.Entities.EntityAppStatus.Initializing">
+            <summary> Application is initializing. </summary>
+        </member>
+        <member name="T:Vita.Entities.EntityApp">
+            <summary>Entity application. </summary>
+        </member>
+        <member name="F:Vita.Entities.EntityApp.AppName">
+            <summary>The app name. Defaults to type name. </summary>
+        </member>
+        <member name="F:Vita.Entities.EntityApp.Version">
+            <summary>Entity application version, formatted as '1.0.0.0' . </summary>
+        </member>
+        <member name="F:Vita.Entities.EntityApp.AppEvents">
+            <summary>Application-level events.</summary>
+        </member>
+        <member name="F:Vita.Entities.EntityApp.EntityEvents">
+            <summary>Entity-level events.</summary>
+        </member>
+        <member name="F:Vita.Entities.EntityApp.CacheSettings">
+            <summary> Gets the settings for entity cache (data cache). </summary>
+        </member>
+        <member name="F:Vita.Entities.EntityApp.ActivationLog">
+            <summary>Gets the activation log for the application. </summary>
+        </member>
+        <member name="F:Vita.Entities.EntityApp.AttributeHandlers">
+            <summary>A dictionary of custom attribute handlers.</summary>
+        </member>
+        <member name="F:Vita.Entities.EntityApp.SizeTable">
+            <summary>Gets a dictionary of string/binary size values indexed by size code (string). </summary>
+            <remarks>
+            The purpose of this table is to make it easier to manage sizes of string columns and change it globally for certain column group. 
+            You can specify column size directly using Size attribute and provide literal value as parameter. 
+            Alternatively, you can specify the size code (string); in this case the system will lookup the value in this dictionary.
+            Later, if you need to change 'Description' columns throughout the app, you can do it by changing the value in the <c>SizeTable</c> dictionary.
+            </remarks>
+        </member>
+        <member name="F:Vita.Entities.EntityApp.DefaultStringLength">
+            <summary>Default length for string properties without Size attribute. </summary>
+        </member>
+        <member name="F:Vita.Entities.EntityApp.ActivationLogPath">
+            <summary>Get a path for activation log file. </summary>
+        </member>
+        <member name="F:Vita.Entities.EntityApp.TimeService">
+            <summary>Gets the instance of the application time service. </summary>
+        </member>
+        <member name="F:Vita.Entities.EntityApp.Authorization">
+            <summary>Gets the instance of the application authorization service. </summary>
+        </member>
+        <member name="F:Vita.Entities.EntityApp.DataAccess">
+            <summary>Gets the instance of the application data access service. </summary>
+        </member>
+        <member name="F:Vita.Entities.EntityApp.ExternalServices">
+            <summary>Gets or sets an external service provider. </summary>
+            <remarks>The value is optional and will be null in most cases. It can be used when several entity applications share 
+            services like error log - with only one application having service implementation and corresponding tables 
+            in the database for error logging. In this case other applications should have a reference to this 'app with error log'
+            in the <c>ExternalServices</c> property. 
+            </remarks>
+        </member>
+        <member name="M:Vita.Entities.EntityApp.#ctor(System.String,System.IServiceProvider)">
+            <summary> Constructs a new EntityApp instance. </summary>
+        </member>
+        <member name="M:Vita.Entities.EntityApp.MoveTo(Vita.Entities.EntityArea,System.Type[])">
+            <summary>Moves entities (types) from their original areas to the target Area. </summary>
+            <param name="toArea">Target area.</param>
+            <param name="entityTypes">Entity types.</param>
+        </member>
+        <member name="M:Vita.Entities.EntityApp.ImportServices(System.IServiceProvider,System.Type[])">
+            <summary>Imports services from external service provider. </summary>
+            <param name="provider">External service provider, usually another entity applications.</param>
+            <param name="serviceTypes">Types of services to import.</param>
+        </member>
+        <member name="M:Vita.Entities.EntityApp.AddArea(System.String,System.String,System.String)">
+            <summary>Adds an area (database schema object like 'dbo') to the data model.</summary>
+            <param name="name">Area name.</param>
+            <param name="schemaName">Database schema name.</param>
+            <param name="description">Description of the area.</param>
+            <returns>A new area instance.</returns>
+            <remarks>Before you can create modules and register entities for your entity application, you must create at least one area/schema object.
+            This area is a container for entity modules. </remarks>
+        </member>
+        <member name="M:Vita.Entities.EntityApp.AddModule(Vita.Entities.EntityModule)">
+            <summary>Adds an entity module to the application. </summary>
+            <param name="module">A module to add.</param>
+        </member>
+        <member name="M:Vita.Entities.EntityApp.ConnectTo(Vita.Data.DbSettings,System.String)">
+            <summary>Creates a data source (database) using provided DB setttings and registers it with data access service.</summary>
+            <param name="dbSettings">Database settings.</param>
+            <param name="tag">Optional. A string tag (name) identifying the data source. To be used in multi-tenant scenario.</param>
+        </member>
+        <member name="M:Vita.Entities.EntityApp.ReplaceEntity(System.Type,System.Type,Vita.Entities.EntityArea)">
+            <summary> Replaces one registered entity with extended version. </summary>
+            <param name="replacedType">The entity type to be replaced.</param>
+            <param name="replacementEntityType">The new replacing entity type.</param>
+            <param name="newTypeArea">Optional. The target area for replaced type.</param>
+            <remarks><para>
+            This method provides a way to extend entities defined in independently built modules. 
+            The other use is to integrate the independently developed modules, so that the tables in database 
+            coming from different modules can actually reference each other through foreign keys.
+            </para><para>
+            The replacement type is placed by default into the area with which the replacement (new) type is registered. 
+            You can specify the area explicitly in <c>targetArea</c> parameter.
+            </para> 
+            </remarks>
+        </member>
+        <member name="M:Vita.Entities.EntityApp.RegisterCompanionTypes(System.Type[])">
+            <summary> Registers companion types. </summary>
+            <param name="companionTypes">Companion types for registered entities.</param>
+            <remarks>Companion type is used as an alternative place to put attributes for an entity. 
+            This facility might be useful for separation of concerns. For example, you can place all database
+            index attribute on companion types that are located in a separate file that is maintaned by a 
+            developer with database expertise. 
+            </remarks>
+        </member>
+        <member name="M:Vita.Entities.EntityApp.RegisterService``1(``0)">
+            <summary>Registers a service with an application. </summary>
+            <typeparam name="T">Service type used as a key in internal servcies dictionary. Usually it is an interface type.</typeparam>
+            <param name="service">Service implementation.</param>
+            <remarks>The most common use for the services is entity module registering itself as a service for the application.
+            For example, ErrorLogModule registers IErrorLogService that application code and other modules can use to log errors.
+            </remarks>
+        </member>
+        <member name="M:Vita.Entities.EntityApp.GetService``1">
+            <summary> Gets a service by service type. </summary>
+            <typeparam name="TService">Service type, usually an interface type.</typeparam>
+            <returns>Service implementation.</returns>
+        </member>
+        <member name="M:Vita.Entities.EntityApp.GetService(System.Type)">
+            <summary> Gets a service by service type. </summary>
+            <param name="serviceType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Entities.EntityApp.GetAllServiceTypes">
+            <summary>Returns the list of all service types (keys) registered in the application. </summary>
+            <returns>List of service interface types.</returns>
+        </member>
+        <member name="M:Vita.Entities.EntityApp.GetAllEntityTypes">
+            <summary>Returns a list of all entity types from all entity modules. </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Entities.EntityApp.ToString">
+            <summary>Returns entity app name. </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Vita.Entities.EntityApp.Flush">
+            <summary>Fires an event requesting all logging facilities to flush buffers. </summary>
+        </member>
+        <member name="M:Vita.Entities.EntityApp.Shutdown">
+            <summary>Performs the shutdown of the application. Notifies all components and modules about pending application shutdown. 
+            </summary>
+        </member>
+        <member name="M:Vita.Entities.EntityApp.Init">
+            <summary>Initializes the entity app. </summary>
+            <remarks>Call this method after you finished composing entity application of modules.
+            The method is called automatically when you connect the application to the database
+            with <c>ConnectTo()</c> extension method.</remarks>
+        </member>
+        <member name="M:Vita.Entities.EntityApp.CheckActivationErrors">
+            <summary>
+            Checks activation log messages and throws exception if there were any errors during application initialization.
+            </summary>
+        </member>
+        <member name="M:Vita.Entities.EntityApp.GetUserRoles(Vita.Entities.UserInfo)">
+            <summary>Returns a list of authorization roles for a given user. </summary>
+            <param name="user">UserInfo object.</param>
+            <returns>List of authorization roles.</returns>
+            <remarks>Override this method if you use Authorization and secure sessions.</remarks>
+        </member>
+        <member name="P:Vita.Entities.EntityApp.Status">
+            <summary>Entity application status, from initialization to shutdown. </summary>
+        </member>
+        <member name="P:Vita.Entities.EntityApp.Areas">
+            <summary>Gets a collection of registered areas. EntityArea is a representation of database schema object like 'dbo'. </summary>
+        </member>
+        <member name="P:Vita.Entities.EntityApp.Modules">
+            <summary>Gets a list of entity modules in the application. </summary>
+        </member>
+        <member name="P:Vita.Entities.EntityApp.Model">
+            <summary>Gets the entity model instance . Entity model is an internal object containing detailed meta-information about entities. </summary>
+            <remarks> This property is initially null - do not use it the <c>EntityApp</c> constructor. 
+            The model is built at application initialization. </remarks>
+        </member>
+        <member name="P:Vita.Entities.EntityApp.LogPath">
+            <summary>Gets or sets a full path of the log file.</summary>
+        </member>
+    </members>
+</doc>
